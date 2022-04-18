@@ -1,8 +1,11 @@
 import Phaser from 'phaser';
-import logoImg from './assets/logo.png';
-import shipImg from './assets/thrust_ship2.png';
-import bulletImg from './assets/bullet0.png';
 
+import PreloadScene from './scenes/Preload';
+import GameSelectScene from './scenes/GameSelect';
+
+const GAME_HEIGHT = 860;
+const GAME_WIDTH = 1280;
+/*
 class MyGameScene extends Phaser.Scene
 {
     constructor ()
@@ -27,19 +30,20 @@ class MyGameScene extends Phaser.Scene
     }
 
 }
+*/
 
 const config = {
     type: Phaser.AUTO,
     parent: 'phaser-example',
-    width: 800,
-    height: 600,
+    width: GAME_WIDTH,
+    height: GAME_HEIGHT,
     physics: {
         default: 'arcade',
         arcade: {
           debug: true,
         }
     },
-    scene: MyGameScene,    
+    scene: [PreloadScene, GameSelectScene],    
 };
 
 const game = new Phaser.Game(config);

@@ -12,3 +12,7 @@ node_modules/
 # Build
 dist/
 /npm-debug.log
+
+# Game Assets
+src/assets/tank-platformer
+src/assets/tds-war
