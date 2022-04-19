@@ -11,7 +11,7 @@ import ScoreNumbers from '../assets/pong/png/numbers_score.png'
 
 // to do:
 
-
+// rounded paddles
 
 // score increases
 // when score is 9, you win
@@ -100,7 +100,7 @@ class PongGame extends Phaser.Scene {
         //bawShadow.setOrigin(0.5,0.5)
 
         // ball
-        baw = this.physics.add.sprite(1280/2, 860/2, 'baw', 2)
+        baw = this.physics.add.sprite(1280/2, 860/2, 'baw', 0)
         baw.setCircle(23)
 
         baw.setOrigin(0.5,0.5)
@@ -110,7 +110,7 @@ class PongGame extends Phaser.Scene {
         
         
        //this.scene.start('GameSelectScene')
-
+        // paddle A
         puda = this.physics.add.sprite(1280*.15, 860/2, 'puda')
         puda.setScale(.5) 
         puda.setOrigin(0,.5)
@@ -118,6 +118,7 @@ class PongGame extends Phaser.Scene {
         puda.setCollideWorldBounds(true)
         puda.setVelocity(0,0);
 
+        //paddle B
        let pudb = this.physics.add.sprite(1280*.80, 860/2, 'pudb')
        pudb.setScale(.5)
        pudb.setOrigin(0,.5)
