@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 
-import PreloadScene from './scenes/Preload';
+import PongGame from './scenes/PongGame';
 import GameSelectScene from './scenes/GameSelect';
 
 const GAME_HEIGHT = 860;
@@ -43,7 +43,7 @@ const config = {
           debug: true,
         }
     },
-    scene: [PreloadScene, GameSelectScene],    
+    scene: [PongGame, GameSelectScene],    
 };
 
 const game = new Phaser.Game(config);

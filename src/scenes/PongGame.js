@@ -37,10 +37,10 @@ let W_KEY, A_KEY, S_KEY, D_KEY;
 let baseMovementSpeed = 250;
 let bawShadow, baw;
 
-class Preload extends Phaser.Scene {
+class PongGame extends Phaser.Scene {
 
     constructor() {
-        super('PreloadScene');
+        super('PongGame');
     }
 
     preload() {
@@ -95,11 +95,14 @@ class Preload extends Phaser.Scene {
         let leftGoalPost = this.add.image(3,120, 'leftGoalPost').setOrigin(0,0)
         let rightGoalPost = this.add.image(1280-138, 120, 'rightGoalPost').setOrigin(0,0)
 
+        // shadow
+        //bawShadow = this.physics.add.sprite(1280/2, 860/2, 'bawShadow')
+        //bawShadow.setOrigin(0.5,0.5)
 
-        bawShadow = this.physics.add.image(1280/2, 860/2, 'bawShadow')
-        bawShadow.setOrigin(0.5,0.5)
+        // ball
+        baw = this.physics.add.sprite(1280/2, 860/2, 'baw', 2)
+        baw.setCircle(23)
 
-        baw = this.physics.add.sprite(1280/2, 860/2, 'baw')
         baw.setOrigin(0.5,0.5)
         baw.setVelocity(0,0)
         baw.setBounce(1,1)
@@ -110,15 +113,15 @@ class Preload extends Phaser.Scene {
 
         puda = this.physics.add.sprite(1280*.15, 860/2, 'puda')
         puda.setScale(.5) 
-        puda.setOrigin(0,0)
-        puda.setBounce(.15,.15)
+        puda.setOrigin(0,.5)
+        puda.setBounce(1,1)
         puda.setCollideWorldBounds(true)
         puda.setVelocity(0,0);
 
        let pudb = this.physics.add.sprite(1280*.80, 860/2, 'pudb')
        pudb.setScale(.5)
-       pudb.setOrigin(0,0)
-       pudb.setBounce(.15,.15)
+       pudb.setOrigin(0,.5)
+       pudb.setBounce(1,1)
        pudb.setCollideWorldBounds(true)
 
 
@@ -149,6 +152,13 @@ class Preload extends Phaser.Scene {
       this.physics.add.collider(pudb, bottomWall);
 
 
+        // score boards
+        let pudaScoreNumber = this.add.sprite(20, 860/2-35, 'scoreNumbers', PUDA_SCORE)
+        pudaScoreNumber.setOrigin(0,0)
+            
+        let pudbScoreNumber = this.add.sprite(1280-80, 860/2-35, 'scoreNumbers', PUDB_SCORE)
+        pudbScoreNumber.setOrigin(0,0)
+
       // create overlap zone behind goal posts
       // puda end zone
       const pudaEndZone = this.physics.add.staticSprite(64, 410, 'blank')
@@ -158,7 +168,8 @@ class Preload extends Phaser.Scene {
      const endZoneAOverlap = this.physics.add.overlap(baw, pudaEndZone, () =>{
         console.log("Pud B Scored!");
         PUDB_SCORE++
-          endZoneAOverlap.active = false;
+        pudbScoreNumber.setFrame(PUDB_SCORE)
+        endZoneAOverlap.active = false;
           
       })
 
@@ -168,17 +179,13 @@ class Preload extends Phaser.Scene {
       pudbEndZone.setSize(100, 500)
 
       const endZoneBOverlap = this.physics.add.overlap(baw, pudbEndZone, () => {
-          console.log("Pub A Scored!");
-          PUDA_SCORE++
-          endZoneBOverlap.active = false;
+        console.log("Pud A Scored!");
+        PUDA_SCORE++
+        pudaScoreNumber.setFrame(PUDA_SCORE)
+        endZoneBOverlap.active = false;
       })
 
-      // score boards
-      const pudaScoreNumber = this.add.sprite(20, 860/2-35, 'scoreNumbers', PUDA_SCORE)
-      pudaScoreNumber.setOrigin(0,0)
-      
-      const pudbScoreNumber = this.add.sprite(1280-80, 860/2-35, 'scoreNumbers', PUDB_SCORE)
-      pudbScoreNumber.setOrigin(0,0)
+
 
 
 
@@ -228,13 +235,28 @@ class Preload extends Phaser.Scene {
     }
 
     // ball shadow follow ball
-    bawShadow.x = baw.x; bawShadow.y = baw.y
+    //bawShadow.x = baw.x; bawShadow.y = baw.y
 
     // if ball goes into endzone A
   
 
     }
 
+    pudAScored() {
+
+    }
+
+    pudBScored() {
+
+    }
+    
+    resetCourt() {
+        // reset pud a
+        // pud b
+        // baw
+    }
+
+
 }
 
-    export default Preload;
+    export default PongGame;
