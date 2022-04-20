@@ -8,24 +8,23 @@ import BawShadow from '../assets/pong/png/ball_shadow.png'
 import PudA from '../assets/pong/png/pud_left.png'
 import PudB from '../assets/pong/png/pud_right.png'
 import ScoreNumbers from '../assets/pong/png/numbers_score.png'
+import BlankPixel from '../assets/pong/png/blankPixel.png'
 
 // to do:
 
-// rounded paddles
-// either need to use blank sprites/images + graphics that matches the sprite/image position
-// or I could just create each piece circle rectangle circle to form paddle group
-// also could draw the path and export the shape - but have to switch to matter physics
 
-// put all boundaries into static group
 
 // 2 minute timer - highest score triggers win/lose image
 // 
 
 // when score is 9, you win
 // when enemy score is 9 you lose
+
 //reset ball and puds
 
-//corner collisions
+// shift slow speed + curve hit
+// space fast dash + strong hit
+// directional control based on Y movement
 
 //basic match making for participants to be able to play
 
@@ -61,7 +60,15 @@ import ScoreNumbers from '../assets/pong/png/numbers_score.png'
 // websockets or gunjs sockets
 // player0 left player1 right
 
+let staticWalls;
+
 let puda;
+let pudaStartingX = 1280*.15;
+let pudaStartingY = 860/2;
+
+let pudb;
+let pudbStartingX = 1280*.80;
+let pudbStartingY = 860/2;
 
 //initilize score keys
 let PUDA_SCORE = 0;
@@ -79,6 +86,8 @@ class PongGame extends Phaser.Scene {
     }
 
     preload() {             
+        // invisible barriers
+        this.load.image('blankPixel', BlankPixel);
         //court
         this.load.image('court2', Court2);
 
@@ -137,7 +146,7 @@ class PongGame extends Phaser.Scene {
         baw.setCircle(23)
         baw.setOrigin(0.5,0.5)
         baw.setVelocity(0,0)
-        baw.setBounce(1,1)
+        baw.setBounce(.85,.85)
         baw.setCollideWorldBounds(true);     
         
         let paddleDefaultWidth = 46;
@@ -145,9 +154,7 @@ class PongGame extends Phaser.Scene {
 
        //this.scene.start('GameSelectScene')
         // paddle Adddd
-        let pudaStartingX = 1280*.15;
-        let pudaStartingY = 860/2;
-       
+     
        
         //paddle A
        puda = this.physics.add.sprite(pudaStartingX, pudaStartingY, 'puda')
@@ -156,39 +163,36 @@ class PongGame extends Phaser.Scene {
        puda.setBounce(0.05,0.05)
        puda.setCollideWorldBounds(true)
 
+
         //paddle B
-       let pudb = this.physics.add.sprite(1280*.80, 860/2, 'pudb')
+       pudb = this.physics.add.sprite(pudbStartingX, pudbStartingY, 'pudb')
        pudb.setScale(.5)
        pudb.setOrigin(0,.5)
-       pudb.setBounce(1,1)
+       pudb.setBounce(0.05,0.05)
        pudb.setCollideWorldBounds(true)
 
 
-
+    // set walls as static group
+        staticWalls = this.physics.add.staticGroup()
 
        // invisible boundaries
-      let topWall = this.physics.add.staticSprite(1280/2, 45, 'none').setOrigin(0,0).setSize(1280, 200)
-      let bottomWall = this.physics.add.staticSprite(1280/2, 860-50, 'none').setOrigin(0,0).setSize(1280, 200)
+      let topWall = staticWalls.create(1280/2, 45, 'blankPixel').setOrigin(0,0).setSize(1280, 200)
+      let bottomWall = staticWalls.create(1280/2, 860-50, 'blankPixel').setOrigin(0,0).setSize(1280, 200)
 
       // puda goal posts
-      let pudaGoalPostTop = this.physics.add.staticSprite(1280/9-30, 195, 'none').setOrigin(0,0).setSize(80, 80)
-      let pudaGoalPostBottom = this.physics.add.staticSprite(1280/9-30, 860-200, 'none').setOrigin(0,0).setSize(80, 80)
+      let pudaGoalPostTop = staticWalls.create(1280/9-30, 195, 'blankPixel').setOrigin(0,0).setSize(80, 80)
+      let pudaGoalPostBottom = staticWalls.create(1280/9-30, 860-200, 'blankPixel').setOrigin(0,0).setSize(80, 80)
 
       // pudb goal posts
-      let pudbGoalPostTop = this.physics.add.staticSprite(1280-114, 195, 'none').setOrigin(0,0).setSize(80, 80)
-      let pudbGoalPostBottom = this.physics.add.staticSprite(1280-114, 860-200, 'none').setOrigin(0,0).setSize(80, 80)
+      let pudbGoalPostTop = staticWalls.create(1280-114, 195, 'blankPixel').setOrigin(0,0).setSize(80, 80)
+      let pudbGoalPostBottom = staticWalls.create(1280-114, 860-200, 'blankPixel').setOrigin(0,0).setSize(80, 80)
 
-      // colliders
-      this.physics.add.collider(baw, topWall);
-      this.physics.add.collider(baw, bottomWall);
+      // colliders ball with paddles
+
       this.physics.add.collider(baw, puda);
       this.physics.add.collider(baw, pudb);
 
-      this.physics.add.collider(puda, topWall);
-      this.physics.add.collider(puda, bottomWall);
-      
-      this.physics.add.collider(pudb, topWall);
-      this.physics.add.collider(pudb, bottomWall);
+
 
                 
       let leftGoalPost = this.add.image(3,120, 'leftGoalPost').setOrigin(0,0)
@@ -243,6 +247,11 @@ class PongGame extends Phaser.Scene {
     }
     
     update() {
+        // colliders grouped
+        this.physics.world.collide(baw, staticWalls);
+        this.physics.world.collide(puda, staticWalls);
+        this.physics.world.collide(pudb, staticWalls);
+        this.physics.world.collide(puda, pudb);
 
     // controls
     // PudA UP
@@ -285,7 +294,8 @@ class PongGame extends Phaser.Scene {
     }
 
     pudAScored() {
-
+        // play cheer sound
+        //resetCourt()
     }
 
     pudBScored() {
@@ -294,6 +304,7 @@ class PongGame extends Phaser.Scene {
     
     resetCourt() {
         // reset pud a
+        puda.set
         // pud b
         // baw
     }
