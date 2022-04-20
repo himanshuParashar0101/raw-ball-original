@@ -5,7 +5,7 @@ import LeftGoalPost from '../assets/pong/png/goal_posts_left.png'
 import RightGoalPost from '../assets/pong/png/goal_posts_right.png'
 import Baw from '../assets/pong/png/ball_frames.png'
 import BawShadow from '../assets/pong/png/ball_shadow.png'
-import PudA from '../assets/pong/png/pud_left.png'
+import PudA from '../assets/pong/png/Rounded1.png'
 import PudB from '../assets/pong/png/pud_right.png'
 import ScoreNumbers from '../assets/pong/png/numbers_score.png'
 
@@ -13,18 +13,47 @@ import ScoreNumbers from '../assets/pong/png/numbers_score.png'
 
 // rounded paddles
 
-// score increases
+// 2 minute timer - highest score triggers win/lose image
+// 
+
 // when score is 9, you win
 // when enemy score is 9 you lose
-// game restart at end
+//reset ball and puds
 
+//corner collisions
+
+//basic match making for participants to be able to play
+
+// quick intro animation
 // menu screen
-// play button
+
 
 // music for each scene
+//https://www.epidemicsound.com/my-music/playlists/10975289/
 // sound effects
+//https://www.videvo.net/royalty-free-sound-effects/tennis/
+//https://www.zapsplat.com/?s=ball+kick&post_type=music&sound-effect-category-id=
 
 // particle effects
+
+//spotlight - ball color effects
+//https://labs.phaser.io/edit.html?src=src/display/blend%20modes/graphics%20blend%20mode.js&v=3.55.2
+
+
+// powerups (bullets etc) motion
+//https://phaser.io/examples/v3/view/physics/arcade/tween-velocity
+
+// camera shake
+//https://labs.phaser.io/edit.html?src=src/game%20objects/particle%20emitter/camera%20test.js&v=3.55.2
+
+// authentication
+// user avatar & name
+// wallet connect
+// nft scan
+// nft selection
+
+// websockets or gunjs sockets
+// player0 left player1 right
 
 let puda;
 
@@ -91,9 +120,7 @@ class PongGame extends Phaser.Scene {
         let court2 = this.add.image(0, 0, 'court2').setOrigin(0,0);
         let courtLines = this.add.image(1280/2, 150, 'courtLines')
         courtLines.setOrigin(0.5,0)
-        
-        let leftGoalPost = this.add.image(3,120, 'leftGoalPost').setOrigin(0,0)
-        let rightGoalPost = this.add.image(1280-138, 120, 'rightGoalPost').setOrigin(0,0)
+
 
         // shadow
         //bawShadow = this.physics.add.sprite(1280/2, 860/2, 'bawShadow')
@@ -102,21 +129,39 @@ class PongGame extends Phaser.Scene {
         // ball
         baw = this.physics.add.sprite(1280/2, 860/2, 'baw', 0)
         baw.setCircle(23)
-
         baw.setOrigin(0.5,0.5)
         baw.setVelocity(0,0)
         baw.setBounce(1,1)
         baw.setCollideWorldBounds(true);     
         
-        
+        let paddleDefaultWidth = 46;
+        let paddleDefaultHeight = 150;
+
        //this.scene.start('GameSelectScene')
-        // paddle A
-        puda = this.physics.add.sprite(1280*.15, 860/2, 'puda')
-        puda.setScale(.5) 
-        puda.setOrigin(0,.5)
-        puda.setBounce(1,1)
-        puda.setCollideWorldBounds(true)
-        puda.setVelocity(0,0);
+        // paddle Adddd
+        let pudaStartingX = 1280*.15;
+        let pudaStartingY = 860/2;
+
+        let pudaWhole = this.physics.add.group([])
+        puda = this.physics.add.sprite(pudaStartingX, pudaStartingY, 'puda')
+        puda.setCircle(44)
+                //puda.setSize(paddleDefaultWidth, paddleDefaultHeight)
+                puda.setOrigin(0,.5)
+                puda.setBounce(1,1)
+                puda.setCollideWorldBounds(true)
+                puda.setVelocity(0,0);
+
+        let pudaGraphic = this.add.graphics()
+        let pudaLength = 65;
+        var pudaColor = 0x00ffff;
+        var pudaAlpha = 1;
+        pudaGraphic.fillStyle(pudaColor, pudaAlpha)
+        pudaGraphic.fillRoundedRect(pudaStartingX, pudaStartingY, 46, 150)
+        
+        
+
+
+
 
         //paddle B
        let pudb = this.physics.add.sprite(1280*.80, 860/2, 'pudb')
@@ -152,6 +197,9 @@ class PongGame extends Phaser.Scene {
       this.physics.add.collider(pudb, topWall);
       this.physics.add.collider(pudb, bottomWall);
 
+                
+      let leftGoalPost = this.add.image(3,120, 'leftGoalPost').setOrigin(0,0)
+      let rightGoalPost = this.add.image(1280-138, 120, 'rightGoalPost').setOrigin(0,0)
 
         // score boards
         let pudaScoreNumber = this.add.sprite(20, 860/2-35, 'scoreNumbers', PUDA_SCORE)
