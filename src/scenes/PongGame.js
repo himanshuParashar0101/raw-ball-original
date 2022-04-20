@@ -5,7 +5,7 @@ import LeftGoalPost from '../assets/pong/png/goal_posts_left.png'
 import RightGoalPost from '../assets/pong/png/goal_posts_right.png'
 import Baw from '../assets/pong/png/ball_frames.png'
 import BawShadow from '../assets/pong/png/ball_shadow.png'
-import PudA from '../assets/pong/png/Rounded1.png'
+import PudA from '../assets/pong/png/pud_left.png'
 import PudB from '../assets/pong/png/pud_right.png'
 import ScoreNumbers from '../assets/pong/png/numbers_score.png'
 
@@ -43,7 +43,8 @@ import ScoreNumbers from '../assets/pong/png/numbers_score.png'
 
 //spotlight - ball color effects
 //https://labs.phaser.io/edit.html?src=src/display/blend%20modes/graphics%20blend%20mode.js&v=3.55.2
-
+// ball trail effect
+//https://labs.phaser.io/view-iframe.html?src=src/game%20objects/graphics/Trail.js&v=3.55.2
 
 // powerups (bullets etc) motion
 //https://phaser.io/examples/v3/view/physics/arcade/tween-velocity
@@ -146,33 +147,14 @@ class PongGame extends Phaser.Scene {
         // paddle Adddd
         let pudaStartingX = 1280*.15;
         let pudaStartingY = 860/2;
-
-        
-        //let pudaTop = this.physics.add.sprite(pudaStartingX, pudaStartingY, 'puda')
-        //pudaTop.setCircle(44)
-        //puda.setSize(paddleDefaultWidth, paddleDefaultHeight)
-        //pudaTop.setOrigin(0,.5)
-        //pudaTop.setBounce(1,1)
-        //pudaTop.setCollideWorldBounds(true)
-        //pudaTop.setVelocity(0,0);
-
-        //let pudaBot = this.physics.add.sprite(pudaStartingX, pudaStartingY+120, 'puda')
-        //pudaBot.setCircle(44)
-
-        //let pudaWhole = this.physics.add.group([])
-        
-        /*
-        let pudaGraphic = this.add.graphics()
-        let pudaLength = 65;
-        var pudaColor = 0x00ffff;
-        var pudaAlpha = 1;
-        pudaGraphic.fillStyle(pudaColor, pudaAlpha)
-        pudaGraphic.fillRoundedRect(pudaStartingX, pudaStartingY, 46, 150)
-        */
-        
-
-
-
+       
+       
+        //paddle A
+       puda = this.physics.add.sprite(pudaStartingX, pudaStartingY, 'puda')
+       puda.setScale(.5)
+       puda.setOrigin(0,.5)
+       puda.setBounce(0.05,0.05)
+       puda.setCollideWorldBounds(true)
 
         //paddle B
        let pudb = this.physics.add.sprite(1280*.80, 860/2, 'pudb')

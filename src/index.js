@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import ClockPlugin from 'phaser3-rex-plugins/plugins/time/clock/Clock.js';
 import PongGame from './scenes/PongGame';
 import GameSelectScene from './scenes/GameSelect';
 
