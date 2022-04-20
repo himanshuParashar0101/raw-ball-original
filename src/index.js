@@ -1,36 +1,10 @@
 import Phaser from 'phaser';
-
+import ClockPlugin from 'phaser3-rex-plugins/plugins/time/clock/Clock.js';
 import PongGame from './scenes/PongGame';
 import GameSelectScene from './scenes/GameSelect';
 
 const GAME_HEIGHT = 860;
 const GAME_WIDTH = 1280;
-/*
-class MyGameScene extends Phaser.Scene
-{
-    constructor ()
-    {
-        super();
-    }
-
-    preload ()
-    {
-        debugger
-        this.load.image('ship', shipImg);
-    }
-
-    create ()
-    {
-        const ship = this.physics.add.image(300, 200, 'ship')
-        
-        ship.setVelocity(10, 10)
-        ship.setBounce(1, 1)
-        ship.setCollideWorldBounds(true)
-        
-    }
-
-}
-*/
 
 const config = {
     type: Phaser.AUTO,
@@ -43,7 +17,7 @@ const config = {
           debug: true,
         }
     },
-    scene: [PongGame, GameSelectScene],    
+    scene: [PongGame, GameSelectScene]
 };
 
 const game = new Phaser.Game(config);

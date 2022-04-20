@@ -14,7 +14,9 @@ import ScoreNumbers from '../assets/pong/png/numbers_score.png'
 // rounded paddles
 // either need to use blank sprites/images + graphics that matches the sprite/image position
 // or I could just create each piece circle rectangle circle to form paddle group
-// also could draw the path and export the shape
+// also could draw the path and export the shape - but have to switch to matter physics
+
+// put all boundaries into static group
 
 // 2 minute timer - highest score triggers win/lose image
 // 
@@ -75,7 +77,7 @@ class PongGame extends Phaser.Scene {
         super('PongGame');
     }
 
-    preload() {
+    preload() {             
         //court
         this.load.image('court2', Court2);
 
@@ -146,27 +148,27 @@ class PongGame extends Phaser.Scene {
         let pudaStartingY = 860/2;
 
         
-        let pudaTop = this.physics.add.sprite(pudaStartingX, pudaStartingY, 'puda')
-        pudaTop.setCircle(44)
+        //let pudaTop = this.physics.add.sprite(pudaStartingX, pudaStartingY, 'puda')
+        //pudaTop.setCircle(44)
         //puda.setSize(paddleDefaultWidth, paddleDefaultHeight)
-        pudaTop.setOrigin(0,.5)
-        pudaTop.setBounce(1,1)
-        pudaTop.setCollideWorldBounds(true)
-        pudaTop.setVelocity(0,0);
+        //pudaTop.setOrigin(0,.5)
+        //pudaTop.setBounce(1,1)
+        //pudaTop.setCollideWorldBounds(true)
+        //pudaTop.setVelocity(0,0);
 
         //let pudaBot = this.physics.add.sprite(pudaStartingX, pudaStartingY+120, 'puda')
         //pudaBot.setCircle(44)
 
         //let pudaWhole = this.physics.add.group([])
         
-
+        /*
         let pudaGraphic = this.add.graphics()
         let pudaLength = 65;
         var pudaColor = 0x00ffff;
         var pudaAlpha = 1;
         pudaGraphic.fillStyle(pudaColor, pudaAlpha)
         pudaGraphic.fillRoundedRect(pudaStartingX, pudaStartingY, 46, 150)
-        
+        */
         
 
 
@@ -259,7 +261,7 @@ class PongGame extends Phaser.Scene {
     }
     
     update() {
-    
+
     // controls
     // PudA UP
     if (W_KEY.isDown) {

@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "phaser": "^3.50.0",
-    "phaser3-planck": "^0.0.4"
+    "phaser3-planck": "^0.0.4",
+    "phaser3-rex-plugins": "^1.1.68"
   }
 }
