@@ -1,15 +1,15 @@
 import Phaser, { Scene } from 'phaser';
-import Court2 from '../assets/pong/png/court_02.png'
+import Court2 from '../assets/pong/png/courtMars.png'
 import CourtLines from '../assets/pong/png/court_center_btn_pause.png'
-import LeftGoalPost from '../assets/pong/png/goal_posts_left.png'
-import RightGoalPost from '../assets/pong/png/goal_posts_right.png'
+import LeftGoalPost from '../assets/pong/png/goal_posts_leftMars.png'
+import RightGoalPost from '../assets/pong/png/goal_posts_rightMars.png'
 import Baw from '../assets/pong/png/ball_frames.png'
 import BawShadow from '../assets/pong/png/ball_shadow.png'
 import PudA from '../assets/pong/png/pud_left.png'
 import PudB from '../assets/pong/png/pud_right.png'
 import ScoreNumbers from '../assets/pong/png/numbers_score.png'
 import BlankPixel from '../assets/pong/png/blankPixel.png'
-
+//RAWBall - Remote Access Workforce Ball
 // to do:
 
 
@@ -30,6 +30,15 @@ import BlankPixel from '../assets/pong/png/blankPixel.png'
 
 // quick intro animation
 // menu screen
+// video background:
+//https://www.storyblocks.com/video/stock/rocket-flies-through-the-clouds-r_pv4cb5sk2bpjq3q
+//https://www.storyblocks.com/video/stock/space-rocket-leaving-earth-and-heading-into-outer-space-rd85pptuuk88dwinj
+//https://www.storyblocks.com/video/stock/approaching-mars-as-it-spins-into-view-346688670
+//https://www.storyblocks.com/video/stock/mars-base-from-orbit-hssphvo-inx6nr3w
+//https://www.storyblocks.com/video/stock/space-capsule-reentry-in-mars-atmosphere-hv2xotdookpzkmsb2
+//https://www.storyblocks.com/video/stock/tracking-shot-of-anonymous-people-in-spacesuits-walking-on-arid-ground-together-during-colonization-of-mars-bis9pvgsukpttqw18
+//https://www.storyblocks.com/video/stock/martian-landscape-one-with-hab-4o7zo4v9gikk6mzq9
+//
 
 
 // music for each scene
@@ -146,7 +155,7 @@ class PongGame extends Phaser.Scene {
         baw.setCircle(23)
         baw.setOrigin(0.5,0.5)
         baw.setVelocity(0,0)
-        baw.setBounce(.85,.85)
+        baw.setBounce(1,1)
         baw.setCollideWorldBounds(true);     
         
         let paddleDefaultWidth = 46;
