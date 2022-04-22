@@ -88,6 +88,10 @@ let W_KEY, A_KEY, S_KEY, D_KEY;
 let baseMovementSpeed = 250;
 let bawShadow, baw;
 
+// timer
+var text;
+var timedEvent;
+
 class PongGame extends Phaser.Scene {
 
     constructor() {
@@ -145,6 +149,15 @@ class PongGame extends Phaser.Scene {
         let courtLines = this.add.image(1280/2, 150, 'courtLines')
         courtLines.setOrigin(0.5,0)
 
+        // 2:30 in seconds
+        this.initialTime = 150;
+
+        text = this.add.text(32, 32, 'Countdown: ' + this.formatTime(this.initialTime));
+
+        // Each 1000 ms call onEvent
+        timedEvent = this.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, loop: true });
+
+        
 
         // shadow
         //bawShadow = this.physics.add.sprite(1280/2, 860/2, 'bawShadow')
@@ -256,6 +269,8 @@ class PongGame extends Phaser.Scene {
     }
     
     update() {
+
+
         // colliders grouped
         this.physics.world.collide(baw, staticWalls);
         this.physics.world.collide(puda, staticWalls);
@@ -313,9 +328,27 @@ class PongGame extends Phaser.Scene {
     
     resetCourt() {
         // reset pud a
-        puda.set
+        //puda.set
         // pud b
         // baw
+    }
+    formatTime(seconds){
+        // Minutes
+        var minutes = Math.floor(seconds/60);
+        // Seconds
+        var partInSeconds = seconds%60;
+        // Adds left zeros to seconds
+        partInSeconds = partInSeconds.toString().padStart(2,'0');
+        // Returns formated time
+        return `${minutes}:${partInSeconds}`;
+    }
+    
+    // timer end event
+    onEvent ()
+    {
+        this.initialTime -= 1; // One second
+        text.setText('Countdown: ' + this.formatTime(this.initialTime));
+        console.log("End");
     }
 
 
