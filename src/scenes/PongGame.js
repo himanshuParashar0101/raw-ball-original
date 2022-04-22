@@ -150,9 +150,9 @@ class PongGame extends Phaser.Scene {
         courtLines.setOrigin(0.5,0)
 
         // 2:30 in seconds
-        this.initialTime = 150;
+        this.initialTime = 120;
 
-        text = this.add.text(32, 32, 'Countdown: ' + this.formatTime(this.initialTime));
+        text = this.add.text(1280/2-60, 32, 'Countdown: ' + this.formatTime(this.initialTime));
 
         // Each 1000 ms call onEvent
         timedEvent = this.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, loop: true });

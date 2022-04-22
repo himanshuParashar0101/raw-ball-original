@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import PongGame from './scenes/PongGame';
+import StartMenu from './scenes/StartMenu';
 import GameSelectScene from './scenes/GameSelect';
 
 const GAME_HEIGHT = 860;
@@ -16,7 +17,7 @@ const config = {
           debug: true,
         }
     },
-    scene: [PongGame, GameSelectScene]
+    scene: [StartMenu, PongGame]
 };
 
 const game = new Phaser.Game(config);
