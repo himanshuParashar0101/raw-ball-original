@@ -1,15 +1,20 @@
 import Phaser, { Scene } from 'phaser';
 import StartMusic from '../assets/pong/sfx/StartMusic.mp3'
 import StartVideo from '../assets/pong/vid/mars1_1.mp4'
-// import background
-// import leftpost
-// import rightpost
+import CourtBg from '../assets/pong/png/courtMars.png'
 
-//import roof
-// import logo
+import LeftGoalPost from '../assets/pong/png/goal_posts_leftMars.png'
+import RightGoalPost from '../assets/pong/png/goal_posts_rightMars.png'
+import Roof from '../assets/pong/png/roofMars.png'
+import GameLogo from '../assets/pong/png/logo.png'
 
-// import play button
-// import play text
+import StartButton from '../assets/pong/png/startButton.png'
+
+
+import ballKickSound1 from '../assets/pong/sfx/ballKickSound.mp3';
+
+
+
 
 // tween the images to snap into position quickly
 
@@ -19,31 +24,16 @@ import StartVideo from '../assets/pong/vid/mars1_1.mp4'
 // import character 3
 // import about
 
-// import sound1
+
 // import sound2
 // import sound3
 
 
-
-// import video file
-// import start menu assets
 //RAWBall - Remote Access Workforce Ball
 // to do:
 
 
 //basic match making for participants to be able to play
-
-// quick intro animation
-// menu screen
-// video background:
-//https://www.storyblocks.com/video/stock/rocket-flies-through-the-clouds-r_pv4cb5sk2bpjq3q
-//https://www.storyblocks.com/video/stock/space-rocket-leaving-earth-and-heading-into-outer-space-rd85pptuuk88dwinj
-//https://www.storyblocks.com/video/stock/approaching-mars-as-it-spins-into-view-346688670
-//https://www.storyblocks.com/video/stock/mars-base-from-orbit-hssphvo-inx6nr3w
-//https://www.storyblocks.com/video/stock/space-capsule-reentry-in-mars-atmosphere-hv2xotdookpzkmsb2
-//https://www.storyblocks.com/video/stock/tracking-shot-of-anonymous-people-in-spacesuits-walking-on-arid-ground-together-during-colonization-of-mars-bis9pvgsukpttqw18
-//https://www.storyblocks.com/video/stock/martian-landscape-one-with-hab-4o7zo4v9gikk6mzq9
-//https://www.storyblocks.com/video/stock/futuristic-spaceship-leaving-a-planet-30-fps-346874197
 
 
 
@@ -56,6 +46,14 @@ class StartMenu extends Phaser.Scene {
     preload() {        
         this.load.audio('startMusic', StartMusic)     
         this.load.video('startVideo', StartVideo, 'videoReady', false, true)
+
+        this.load.image('courtBg', CourtBg)
+        
+        this.load.image('leftGoalPost', LeftGoalPost)
+        this.load.image('rightGoalPost', RightGoalPost)
+        this.load.image('roof', Roof)
+        this.load.image('logo', GameLogo)
+        this.load.image('startButton', StartButton)
     }
 
     create() {
@@ -63,12 +61,76 @@ class StartMenu extends Phaser.Scene {
         
         videoIntro.setDisplayOrigin(0)
         videoIntro.setDisplaySize(1280, 860)
-        this.sound.play('startMusic', {volume: 0.5});
+        this.sound.play('startMusic', {volume: 0.25});
         videoIntro.play(false)
+        // at video end do tweens 
+        //this.tweenImages()
+        var courtBg =  this.add.image(0, 890, 'courtBg').setOrigin(0,0);
+        var leftGoalPost = this.add.image(0, -860, 'leftGoalPost').setOrigin(0)
+        let rightGoalPost = this.add.image(1280-138, -860, 'rightGoalPost').setOrigin(0,0)
+        let roof = this.add.image(1280/5+10, -276, 'roof').setOrigin(0,0)
+        let gameLogo = this.add.image(1280/5+90, -276, 'logo').setOrigin(0,0)
+        let startButton = this.add.image(1280/2, -376, 'startButton').setOrigin(0.5,.5).setInteractive();
+        startButton.on('pointerdown', function (){
+            this.scene.start('PongGame')
+        }, this)
+        // tween testing
+        this.tweens.add({
+            targets: courtBg,
+            y: 0,
+            duration: 1800,
+            ease: 'Bounce',
+            yoyo: false,
+            delay: 7000
+        });
+        this.tweens.add({
+            targets: leftGoalPost,
+            y: 120,
+            duration: 2000,
+            ease: 'Bounce',
+            yoyo: false,
+            delay: 7100
+        });
+        this.tweens.add({
+            targets: rightGoalPost,
+            y: 120,
+            duration: 2000,
+            ease: 'Bounce',
+            yoyo: false,
+            delay: 7200
+        });
+        this.tweens.add({
+            targets: roof,
+            y: 0,
+            duration: 1000,
+            ease: 'Linear',
+            yoyo: false,
+            delay: 7300
+        });
+        this.tweens.add({
+            targets: gameLogo,
+            y: 20,
+            duration: 1000,
+            ease: 'Linear',
+            yoyo: false,
+            delay: 7300
+        });
+        this.tweens.add({
+            targets: startButton,
+            y: 860/2,
+            duration: 1000,
+            ease: 'Bounce',
+            yoyo: false,
+            delay: 7500
+        });
     }
     
     update() {
 
+    }
+    tweenImages() {
+        //var courtBg =  this.add.image(0, 890, 'courtBg').setOrigin(0,0);
+        
     }
 
 
