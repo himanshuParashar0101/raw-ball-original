@@ -1,4 +1,7 @@
 import Phaser, { Scene } from 'phaser';
+
+import GafferGreeting from '../assets/pong/png/gafferGreeting.png'
+
 import StartMusic from '../assets/pong/sfx/StartMusic.mp3'
 import StartVideo from '../assets/pong/vid/mars1_1.mp4'
 import CourtBg from '../assets/pong/png/courtMars.png'
@@ -6,19 +9,26 @@ import CourtBg from '../assets/pong/png/courtMars.png'
 import LeftGoalPost from '../assets/pong/png/goal_posts_leftMars.png'
 import RightGoalPost from '../assets/pong/png/goal_posts_rightMars.png'
 import Roof from '../assets/pong/png/roofMars.png'
-import GameLogo from '../assets/pong/png/logo.png'
+import GameLogo from '../assets/pong/png/rawballLogo.png'
 
 import StartButton from '../assets/pong/png/startButton.png'
 
 
-import ballKickSound1 from '../assets/pong/sfx/ballKickSound.mp3';
+import BallKickSound1 from '../assets/pong/sfx/ballKickSound.mp3';
+import MediumCheer6 from '../assets/pong/sfx/medcheer6.mp3';
 
 
-
+var courtBg;
+var leftGoalPost;
+var rightGoalPost;
+var roof;
+var gameLogo;
+var startButton;
 
 // tween the images to snap into position quickly
 
-// import sound icon
+// import soundControl icon
+
 // import character 1
 // import character 2
 // import character 3
@@ -44,8 +54,12 @@ class StartMenu extends Phaser.Scene {
     }
 
     preload() {        
+        this.load.image('gafferGreeting', GafferGreeting)
         this.load.audio('startMusic', StartMusic)     
         this.load.video('startVideo', StartVideo, 'videoReady', false, true)
+
+        this.load.audio('ballKickSound1', BallKickSound1)
+        this.load.audio('mediumCheer6', MediumCheer6)
 
         this.load.image('courtBg', CourtBg)
         
@@ -54,6 +68,7 @@ class StartMenu extends Phaser.Scene {
         this.load.image('roof', Roof)
         this.load.image('logo', GameLogo)
         this.load.image('startButton', StartButton)
+        
     }
 
     create() {
@@ -61,24 +76,38 @@ class StartMenu extends Phaser.Scene {
         
         videoIntro.setDisplayOrigin(0)
         videoIntro.setDisplaySize(1280, 860)
-        this.sound.play('startMusic', {volume: 0.25});
-        videoIntro.play(false)
-        // at video end do tweens 
-        //this.tweenImages()
-        var courtBg =  this.add.image(0, 890, 'courtBg').setOrigin(0,0);
-        var leftGoalPost = this.add.image(0, -860, 'leftGoalPost').setOrigin(0)
-        let rightGoalPost = this.add.image(1280-138, -860, 'rightGoalPost').setOrigin(0,0)
-        let roof = this.add.image(1280/5+10, -276, 'roof').setOrigin(0,0)
-        let gameLogo = this.add.image(1280/5+90, -276, 'logo').setOrigin(0,0)
-        let startButton = this.add.image(1280/2, -376, 'startButton').setOrigin(0.5,.5).setInteractive();
+
+         courtBg =  this.add.image(0, 890, 'courtBg').setOrigin(0,0);
+         leftGoalPost = this.add.image(0, -860, 'leftGoalPost').setOrigin(0)
+         rightGoalPost = this.add.image(1280-138, -860, 'rightGoalPost').setOrigin(0,0)
+         roof = this.add.image(1280/5+10, -300, 'roof').setOrigin(0,0)
+         gameLogo = this.add.image(1280/4+55, -286, 'logo').setOrigin(0,0)
+         startButton = this.add.image(1280/2, -376, 'startButton').setOrigin(0.5,.5).setInteractive();
+
+            
+        let aboutScreen = this.add.image(0, 0, 'gafferGreeting').setOrigin(0).setInteractive()
+
+        aboutScreen.on('pointerdown', function(){
+            aboutScreen.destroy()
+            this.sound.play('startMusic', {volume: 0.25});
+            videoIntro.play(false)
+            this.tweenImages()
+        }, this)
+
         startButton.on('pointerdown', function (){
+            this.sound.play('ballKickSound1')
+            this.sound.play('mediumCheer6')
             this.scene.start('PongGame')
         }, this)
+
+
+    }
+    tweenImages() {
         // tween testing
         this.tweens.add({
             targets: courtBg,
             y: 0,
-            duration: 1800,
+            duration: 1400,
             ease: 'Bounce',
             yoyo: false,
             delay: 7000
@@ -101,7 +130,7 @@ class StartMenu extends Phaser.Scene {
         });
         this.tweens.add({
             targets: roof,
-            y: 0,
+            y: -60,
             duration: 1000,
             ease: 'Linear',
             yoyo: false,
@@ -109,7 +138,7 @@ class StartMenu extends Phaser.Scene {
         });
         this.tweens.add({
             targets: gameLogo,
-            y: 20,
+            y: 40,
             duration: 1000,
             ease: 'Linear',
             yoyo: false,
@@ -123,15 +152,11 @@ class StartMenu extends Phaser.Scene {
             yoyo: false,
             delay: 7500
         });
-    }
-    
+}
     update() {
 
     }
-    tweenImages() {
-        //var courtBg =  this.add.image(0, 890, 'courtBg').setOrigin(0,0);
-        
-    }
+    
 
 
 

@@ -83,9 +83,11 @@ let pudbStartingY = 860/2;
 let PUDA_SCORE = 0;
 let PUDB_SCORE = 0;
 
-let W_KEY, A_KEY, S_KEY, D_KEY;
+let W_KEY, A_KEY, S_KEY, D_KEY, SPACE_KEY, SHIFT_KEY;
 
 let baseMovementSpeed = 250;
+let fastMovementSpeed = 500;
+let currentSpeed;
 let bawShadow, baw;
 
 // timer
@@ -182,7 +184,7 @@ class PongGame extends Phaser.Scene {
        puda = this.physics.add.sprite(pudaStartingX, pudaStartingY, 'puda')
        puda.setScale(.5)
        puda.setOrigin(0,.5)
-       puda.setBounce(0.05,0.05)
+       puda.setBounce(1,1)
        puda.setCollideWorldBounds(true)
 
 
@@ -190,7 +192,7 @@ class PongGame extends Phaser.Scene {
        pudb = this.physics.add.sprite(pudbStartingX, pudbStartingY, 'pudb')
        pudb.setScale(.5)
        pudb.setOrigin(0,.5)
-       pudb.setBounce(0.05,0.05)
+       pudb.setBounce(1,1)
        pudb.setCollideWorldBounds(true)
 
 
@@ -198,16 +200,16 @@ class PongGame extends Phaser.Scene {
         staticWalls = this.physics.add.staticGroup()
 
        // invisible boundaries
-      let topWall = staticWalls.create(1280/2, 45, 'blankPixel').setOrigin(0,0).setSize(1280, 200)
-      let bottomWall = staticWalls.create(1280/2, 860-50, 'blankPixel').setOrigin(0,0).setSize(1280, 200)
+      let topWall = staticWalls.create(1280/2, 45, 'blankPixel').setOrigin(0,0).setSize(1280, 200).setBounce(1,1)
+      let bottomWall = staticWalls.create(1280/2, 860-50, 'blankPixel').setOrigin(0,0).setSize(1280, 200).setBounce(1,1)
 
       // puda goal posts
-      let pudaGoalPostTop = staticWalls.create(1280/9-30, 195, 'blankPixel').setOrigin(0,0).setSize(80, 80)
-      let pudaGoalPostBottom = staticWalls.create(1280/9-30, 860-200, 'blankPixel').setOrigin(0,0).setSize(80, 80)
+      let pudaGoalPostTop = staticWalls.create(1280/9-30, 195, 'blankPixel').setOrigin(0,0).setSize(80, 80).setBounce(1,1)
+      let pudaGoalPostBottom = staticWalls.create(1280/9-30, 860-200, 'blankPixel').setOrigin(0,0).setSize(80, 80).setBounce(1,1)
 
       // pudb goal posts
-      let pudbGoalPostTop = staticWalls.create(1280-114, 195, 'blankPixel').setOrigin(0,0).setSize(80, 80)
-      let pudbGoalPostBottom = staticWalls.create(1280-114, 860-200, 'blankPixel').setOrigin(0,0).setSize(80, 80)
+      let pudbGoalPostTop = staticWalls.create(1280-114, 195, 'blankPixel').setOrigin(0,0).setSize(80, 80).setBounce(1,1)
+      let pudbGoalPostBottom = staticWalls.create(1280-114, 860-200, 'blankPixel').setOrigin(0,0).setSize(80, 80).setBounce(1,1)
 
       // colliders ball with paddles
 
@@ -263,6 +265,7 @@ class PongGame extends Phaser.Scene {
     S_KEY = this.input.keyboard.addKey('S');  // Get key object
     A_KEY = this.input.keyboard.addKey('A');  // Get key object
     D_KEY = this.input.keyboard.addKey('D');  // Get key object
+    SPACE_KEY = this.input.keyboard.addKey('SPACE')
     
     
 
@@ -276,11 +279,18 @@ class PongGame extends Phaser.Scene {
         this.physics.world.collide(puda, staticWalls);
         this.physics.world.collide(pudb, staticWalls);
         this.physics.world.collide(puda, pudb);
-
+    currentSpeed = baseMovementSpeed
     // controls
+    if (SPACE_KEY.isDown) {
+        currentSpeed = fastMovementSpeed
+    }    
+    if (Phaser.Input.Keyboard.JustUp(SPACE_KEY)) {
+        currentSpeed = baseMovementSpeed
+    }
+
     // PudA UP
     if (W_KEY.isDown) {
-        puda.setVelocityY(-baseMovementSpeed)
+        puda.setVelocityY(-currentSpeed)
     }
     if (Phaser.Input.Keyboard.JustUp(W_KEY)) {
         puda.setVelocityY(0)
@@ -288,14 +298,14 @@ class PongGame extends Phaser.Scene {
 
     // PudA DOWN
     if (S_KEY.isDown) {
-        puda.setVelocityY(baseMovementSpeed)
+        puda.setVelocityY(currentSpeed)
     } 
     if (Phaser.Input.Keyboard.JustUp(S_KEY)) {
         puda.setVelocityY(0)
     }   
     // PudA Left
     if (A_KEY.isDown) {
-        puda.setVelocityX(-baseMovementSpeed)
+        puda.setVelocityX(-currentSpeed)
     }
     if (Phaser.Input.Keyboard.JustUp(A_KEY)) {
         puda.setVelocityX(0)
@@ -303,7 +313,7 @@ class PongGame extends Phaser.Scene {
 
     // PudA Right
     if (D_KEY.isDown) {
-        puda.setVelocityX(baseMovementSpeed)
+        puda.setVelocityX(currentSpeed)
     } 
     if (Phaser.Input.Keyboard.JustUp(D_KEY)) {
         puda.setVelocityX(0)
