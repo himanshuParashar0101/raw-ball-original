@@ -86,15 +86,16 @@ class StartMenu extends Phaser.Scene {
 
             
         let aboutScreen = this.add.image(0, 0, 'gafferGreeting').setOrigin(0).setInteractive()
-
+        let startScreenMusic;
         aboutScreen.on('pointerdown', function(){
             aboutScreen.destroy()
-            this.sound.play('startMusic', {volume: 0.25});
+            startScreenMusic = this.sound.play('startMusic', {volume: 0.25});
             videoIntro.play(false)
             this.tweenImages()
         }, this)
 
         startButton.on('pointerdown', function (){
+            this.game.sound.stopAll();
             this.sound.play('ballKickSound1')
             this.sound.play('mediumCheer6')
             this.scene.start('PongGame')
@@ -107,7 +108,7 @@ class StartMenu extends Phaser.Scene {
         this.tweens.add({
             targets: courtBg,
             y: 0,
-            duration: 1400,
+            duration: 1200,
             ease: 'Bounce',
             yoyo: false,
             delay: 7000

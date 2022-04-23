@@ -9,6 +9,9 @@ import PudA from '../assets/pong/png/pud_left.png'
 import PudB from '../assets/pong/png/pud_right.png'
 import ScoreNumbers from '../assets/pong/png/numbers_score.png'
 import BlankPixel from '../assets/pong/png/blankPixel.png'
+
+import BallKickSound1 from '../assets/pong/sfx/ballKickSound.mp3';
+
 //RAWBall - Remote Access Workforce Ball
 // to do:
 
@@ -28,21 +31,7 @@ import BlankPixel from '../assets/pong/png/blankPixel.png'
 
 //basic match making for participants to be able to play
 
-// quick intro animation
-// menu screen
-// video background:
-//https://www.storyblocks.com/video/stock/rocket-flies-through-the-clouds-r_pv4cb5sk2bpjq3q
-//https://www.storyblocks.com/video/stock/space-rocket-leaving-earth-and-heading-into-outer-space-rd85pptuuk88dwinj
-//https://www.storyblocks.com/video/stock/approaching-mars-as-it-spins-into-view-346688670
-//https://www.storyblocks.com/video/stock/mars-base-from-orbit-hssphvo-inx6nr3w
-//https://www.storyblocks.com/video/stock/space-capsule-reentry-in-mars-atmosphere-hv2xotdookpzkmsb2
-//https://www.storyblocks.com/video/stock/tracking-shot-of-anonymous-people-in-spacesuits-walking-on-arid-ground-together-during-colonization-of-mars-bis9pvgsukpttqw18
-//https://www.storyblocks.com/video/stock/martian-landscape-one-with-hab-4o7zo4v9gikk6mzq9
-//
 
-
-// music for each scene
-//https://www.epidemicsound.com/my-music/playlists/10975289/
 // sound effects
 //https://www.videvo.net/royalty-free-sound-effects/tennis/
 //https://www.zapsplat.com/?s=ball+kick&post_type=music&sound-effect-category-id=
@@ -89,6 +78,8 @@ let baseMovementSpeed = 250;
 let fastMovementSpeed = 500;
 let currentSpeed;
 let bawShadow, baw;
+
+let bounce1;
 
 // timer
 var text;
@@ -143,7 +134,8 @@ class PongGame extends Phaser.Scene {
             frameHeight: 64
         })
 
-
+        // SFX
+        this.load.audio('ballKickSound1', BallKickSound1)
     }
 
     create() {
@@ -172,6 +164,9 @@ class PongGame extends Phaser.Scene {
         baw.setVelocity(0,0)
         baw.setBounce(1,1)
         baw.setCollideWorldBounds(true);     
+
+        // ball sounds
+        bounce1 = this.sound.add('ballKickSound1', {loop: false})
         
         let paddleDefaultWidth = 46;
         let paddleDefaultHeight = 150;
@@ -213,8 +208,14 @@ class PongGame extends Phaser.Scene {
 
       // colliders ball with paddles
 
-      this.physics.add.collider(baw, puda);
-      this.physics.add.collider(baw, pudb);
+      this.physics.add.collider(baw, puda, function(){
+        
+        //bounce1.on('complete', listener);
+        bounce1.play()
+      });
+      this.physics.add.collider(baw, pudb, function(){
+        bounce1.play()
+      });
 
 
 
