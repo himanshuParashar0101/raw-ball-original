@@ -69,8 +69,8 @@ let gameOver = false;
 var text;
 var timedEvent;
 
-localStorage.getItem("yesMonetized")
-let webMonetization;
+
+let webMonetization = false;
 let particles;
 let webMonetizationEmitter;
 
@@ -198,6 +198,7 @@ class PongGame extends Phaser.Scene {
 
         // web monetization
         if (localStorage.getItem("yesMonetized") === "addSparkles") {
+            webMonetization = true;
             particles = this.add.particles('spark');
             webMonetizationEmitter = particles.createEmitter();
             webMonetizationEmitter.setPosition(puda.x, puda.y+8);
@@ -407,7 +408,12 @@ class PongGame extends Phaser.Scene {
     }
 
     //webMonetizationEmitter
+    if (webMonetization === true) {
     webMonetizationEmitter.setPosition(puda.x, puda.y+20)    
+    }
+
+
+    
     }
 
     createCourt() {
