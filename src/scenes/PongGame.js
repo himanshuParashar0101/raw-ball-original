@@ -94,6 +94,8 @@ let pudbScoreNumber
 let bounce1;
 let goalCheer;
 
+let bounceSoundComplete = true;
+
 // timer
 var text;
 var timedEvent;
@@ -223,12 +225,25 @@ class PongGame extends Phaser.Scene {
       // colliders ball with paddles
 
       this.physics.add.collider(baw, puda, function(){
-        
-        //bounce1.on('complete', listener);
-        bounce1.play()
+
+        if (bounceSoundComplete === true) {
+            bounce1.play()
+        }        
+        bounceSoundComplete = false;
+        bounce1.on('complete', ()=> {
+            bounceSoundComplete = true;
+        });
       });
+
+
       this.physics.add.collider(baw, pudb, function(){
-        bounce1.play()
+        if (bounceSoundComplete === true) {
+            bounce1.play()
+        }   
+        bounceSoundComplete = false;
+        bounce1.on('complete', ()=> {
+            bounceSoundComplete = true;
+        });  
       });
 
 
@@ -349,6 +364,34 @@ class PongGame extends Phaser.Scene {
 
     pudbX = pudb.x;
     pudbY = pudb.y;
+
+    // make enemy go tward ball
+    // --->
+    // add modifier to slowdown or speed up 
+    let enemySpeedMod;
+    if (pudbX > 640) {
+        enemySpeedMod = 0.85
+    }
+    if (pudbX > 300 && pudbX < 640) {
+        enemySpeedMod = 0.65
+    }
+    if (pudbX < 300) {
+        enemySpeedMod = 0.5
+    }
+    if (ballX < pudbX) {
+        pudb.setVelocityX(-currentSpeed*enemySpeedMod)
+    }
+    if (ballX > pudbX) {
+        pudb.setVelocityY(currentSpeed*enemySpeedMod)
+    }
+    // ^
+    if (ballY > pudbY) {
+        pudb.setVelocityY(currentSpeed*enemySpeedMod)
+    }
+    // down
+    if (ballY < pudbY) {
+        pudb.setVelocityY(-currentSpeed*enemySpeedMod)
+    }
 
 
     }
