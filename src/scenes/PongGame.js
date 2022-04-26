@@ -196,6 +196,7 @@ class PongGame extends Phaser.Scene {
        puda.setBounce(1,1)
        puda.setCollideWorldBounds(true)
 
+        console.log(localStorage.getItem("yesMonetized"));
         // web monetization
         if (localStorage.getItem("yesMonetized") === "addSparkles") {
             webMonetization = true;
@@ -413,7 +414,7 @@ class PongGame extends Phaser.Scene {
     }
 
 
-    
+
     }
 
     createCourt() {
