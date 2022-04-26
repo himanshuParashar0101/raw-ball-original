@@ -12,6 +12,7 @@ import BlankPixel from '../assets/pong/png/blankPixel.png'
 import GoalImage from '../assets/pong/png/text_goal.png'
 import YouLose from '../assets/pong/png/text_lose.png'
 import YouWin from '../assets/pong/png/text_win.png'
+import BlueSparks from '../assets/pong/png/blue.png'
 
 import BallKickSound1 from '../assets/pong/sfx/ballKickSound.mp3';
 import GoalCheerSound from '../assets/pong/sfx/crowdGoalcheer.mp3';
@@ -21,57 +22,7 @@ import BgAmbience from '../assets/pong/sfx/arena.mp3'
 
 import PudbVoiceLose from '../assets/pong/sfx/pudbVoiceLose.mp3';
 import PudbVoiceLaugh from '../assets/pong/sfx/pudbLaugh.mp3';
-import PudbVoiceStart from '../assets/pong/sfx/pudbLaugh.mp3';
-
-
-//RAWBall - Remote Access Workforce Ball
-// to do:
-
-
-
-// 2 minute timer - highest score triggers win/lose image
-// 
-
-// when score is 9, you win
-// when enemy score is 9 you lose
-
-//reset ball and puds
-
-// add back button
-
-
-// shift slow speed + curve hit
-// space fast dash + strong hit
-// directional control based on Y movement
-
-//basic match making for participants to be able to play
-
-
-// sound effects
-//https://www.videvo.net/royalty-free-sound-effects/tennis/
-//https://www.zapsplat.com/?s=ball+kick&post_type=music&sound-effect-category-id=
-
-// particle effects
-
-//spotlight - ball color effects
-//https://labs.phaser.io/edit.html?src=src/display/blend%20modes/graphics%20blend%20mode.js&v=3.55.2
-// ball trail effect
-//https://labs.phaser.io/view-iframe.html?src=src/game%20objects/graphics/Trail.js&v=3.55.2
-
-// powerups (bullets etc) motion
-//https://phaser.io/examples/v3/view/physics/arcade/tween-velocity
-
-// camera shake
-//https://labs.phaser.io/edit.html?src=src/game%20objects/particle%20emitter/camera%20test.js&v=3.55.2
-
-// authentication
-// user avatar & name
-// wallet connect
-// nft scan
-// nft selection
-
-// websockets or gunjs sockets
-// player0 left player1 right
+import PudbVoiceStart from '../assets/pong/sfx/pudbVoiceStart.mp3';
 
 let staticWalls;
 
@@ -118,13 +69,22 @@ let gameOver = false;
 var text;
 var timedEvent;
 
+localStorage.getItem("yesMonetized")
+let webMonetization;
+let particles;
+let webMonetizationEmitter;
+
 class PongGame extends Phaser.Scene {
 
     constructor() {
         super('PongGame');
     }
 
-    preload() {             
+    preload() {         
+        //web monetization
+
+        this.load.image('spark', BlueSparks)
+        
         // invisible barriers
         this.load.image('blankPixel', BlankPixel);
         // goal image
@@ -184,6 +144,8 @@ class PongGame extends Phaser.Scene {
     }
 
     create() {
+        let enemyVoiceStart = this.sound.add('pudbVoiceStart', {loop: false});
+        enemyVoiceStart.play()
         let court2 = this.add.image(0, 0, 'court2').setOrigin(0,0);
         let courtLines = this.add.image(1280/2, 150, 'courtLines')
         courtLines.setOrigin(0.5,0)
@@ -234,7 +196,14 @@ class PongGame extends Phaser.Scene {
        puda.setBounce(1,1)
        puda.setCollideWorldBounds(true)
 
-
+        // web monetization
+        if (localStorage.getItem("yesMonetized") === "addSparkles") {
+            particles = this.add.particles('spark');
+            webMonetizationEmitter = particles.createEmitter();
+            webMonetizationEmitter.setPosition(puda.x, puda.y+8);
+            webMonetizationEmitter.setSpeed(50);
+            webMonetizationEmitter.setBlendMode(Phaser.BlendModes.ADD);
+        }
         //paddle B
        pudb = this.physics.add.sprite(pudbStartingX, pudbStartingY, 'pudb')
        pudb.setScale(.5)
@@ -307,6 +276,14 @@ class PongGame extends Phaser.Scene {
         pudbScoreNumber.setFrame(PUDB_SCORE)
         endZoneAOverlap.active = false;
         goalCheer.play()
+        let pudbVoiceLaugh = this.sound.add('pudbVoiceLaugh', {loop: false})
+        if (robotVoiceComplete === true) {
+            pudbVoiceLaugh.play()
+        }        
+        robotVoiceComplete = false;
+        pudbVoiceLaugh.on('complete', ()=> {
+            robotVoiceComplete = true;
+        });
         this.physics.world.timeScale = 4;
           this.resetCourt()
       })
@@ -429,7 +406,8 @@ class PongGame extends Phaser.Scene {
         pudb.setVelocityY(-250*enemySpeedMod)
     }
 
-
+    //webMonetizationEmitter
+    webMonetizationEmitter.setPosition(puda.x, puda.y+20)    
     }
 
     createCourt() {
@@ -487,7 +465,16 @@ class PongGame extends Phaser.Scene {
         PUDB_SCORE++
         pudbScoreNumber.setFrame(this.PUDB_SCORE)
         endZoneAOverlap.active = false;
-        goalCheer.play()
+
+        let pudbVoiceLaugh = this.sound.add('pudbVoiceLaugh', {loop: false})
+        if (robotVoiceComplete === true) {
+            pudbVoiceLaugh.play()
+        }        
+        robotVoiceComplete = false;
+        pudbVoiceLaugh.on('complete', ()=> {
+            robotVoiceComplete = true;
+        });
+
         this.physics.world.timeScale = 3;
           this.resetCourt()
       })
@@ -513,14 +500,6 @@ class PongGame extends Phaser.Scene {
         if (PUDB_SCORE === 9) {
             gameOver = true;
         let loseImage = this.add.image(1260/2, 860/2, 'loseImage')        
-        let pudbVoiceLaugh = this.sound.add('pudbVoiceLaugh', {loop: false})
-        if (robotVoiceComplete === true) {
-            pudbVoiceLaugh.play()
-        }        
-        robotVoiceComplete = false;
-        pudbVoiceLaugh.on('complete', ()=> {
-            robotVoiceComplete = true;
-        });
             //puda.destroy()
             //pudb.destroy()
             //baw.destroy()
@@ -603,7 +582,7 @@ class PongGame extends Phaser.Scene {
                 //pudb.destroy()
                 //baw.destroy()
                 this.time.delayedCall(9000, ()=> {
-                    bgAmbience.stop()
+                    this.game.sound.stopAll();
                     this.scene.start('StartMenu')
                 }, [], this)
             } 
@@ -621,7 +600,7 @@ class PongGame extends Phaser.Scene {
                 //pudb.destroy()
                 //baw.destroy()
                 this.time.delayedCall(9000, ()=> {
-                    bgAmbience.stop()
+                    this.game.sound.stopAll();
                     this.scene.start('StartMenu')
                 }, [], this)
             } 

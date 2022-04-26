@@ -2,7 +2,22 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <meta name="monetization" content="$ilp.uphold.com/EGjqL4EfKkKa">
+    <style>
+      .hidden {
+        display: none;
+      }
+    </style>
+      <script>
+        if (document.monetization) {
+          document.monetization.addEventListener('monetizationstart', () => {
+            document.getElementById('exclusive').classList.remove('hidden')
+            localStorage.setItem("yesMonetized", "addSparkles")
+          })
+        }
+      </script>
   </head>
   <body>
+    <div id="exclusive" class="hidden">Thanks for supporting! Sparkly particles added!</div>
   </body>
 </html>
