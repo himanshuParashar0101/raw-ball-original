@@ -102,7 +102,7 @@ let pudbY;
 let leftGoalPost ;
 let rightGoalPost;
 let pudaScoreNumber;
-let pudbScoreNumber
+let pudbScoreNumber;
 
 let bounce1;
 let goalCheer;
@@ -110,6 +110,9 @@ let buzzerSound
 let bgAmbience;
 
 let bounceSoundComplete = true;
+let robotVoiceComplete = true;
+
+let gameOver = false;
 
 // timer
 var text;
@@ -294,12 +297,12 @@ class PongGame extends Phaser.Scene {
 
       // create overlap zone behind goal posts
       // puda end zone
-      const pudaEndZone = this.physics.add.staticSprite(34, 410, 'blankPixel')
+      let pudaEndZone = this.physics.add.staticSprite(34, 410, 'blankPixel')
       pudaEndZone.setOrigin(0,0)
       pudaEndZone.setSize(20, 500)
 
-     const endZoneAOverlap = this.physics.add.overlap(baw, pudaEndZone, () =>{
-        console.log("Pud B Scored!");
+      let endZoneAOverlap = this.physics.add.overlap(baw, pudaEndZone, () =>{
+        //console.log("Pud B Scored!");
         PUDB_SCORE++
         pudbScoreNumber.setFrame(PUDB_SCORE)
         endZoneAOverlap.active = false;
@@ -309,17 +312,17 @@ class PongGame extends Phaser.Scene {
       })
 
       //pudb end zone
-      const pudbEndZone = this.physics.add.staticSprite(1280-64+30, 860-410, 'blankPixel')
+      let pudbEndZone = this.physics.add.staticSprite(1280-64+30, 860-410, 'blankPixel')
       pudbEndZone.setOrigin(0,0)
       pudbEndZone.setSize(20, 500)
 
-      const endZoneBOverlap = this.physics.add.overlap(baw, pudbEndZone, () => {
-        console.log("Pud A Scored!");
+      let endZoneBOverlap = this.physics.add.overlap(baw, pudbEndZone, () => {
+        //console.log("Pud A Scored!");
         PUDA_SCORE++
         pudaScoreNumber.setFrame(PUDA_SCORE)
         endZoneBOverlap.active = false;
         goalCheer.play()
-        this.physics.world.timeScale = 6;
+        this.physics.world.timeScale = 4;
         this.resetCourt()
       })
 
@@ -452,9 +455,17 @@ class PongGame extends Phaser.Scene {
                baw.setVelocity(0,0)
                baw.setBounce(1,1)
                baw.setCollideWorldBounds(true); 
-        leftGoalPost = this.add.image(3,120, 'leftGoalPost').setOrigin(0,0)
-        rightGoalPost = this.add.image(1280-138, 120, 'rightGoalPost').setOrigin(0,0)               
 
+        leftGoalPost = this.add.image(3,120, 'leftGoalPost').setOrigin(0,0)
+        rightGoalPost = this.add.image(1280-138, 120, 'rightGoalPost').setOrigin(0,0)     
+                  
+        // score boards
+        pudaScoreNumber = this.add.sprite(20, 860/2-35, 'scoreNumbers', PUDA_SCORE)
+        pudaScoreNumber.setOrigin(0,0)
+        console.log('puda score;'+PUDA_SCORE);
+            
+        pudbScoreNumber = this.add.sprite(1280-80, 860/2-35, 'scoreNumbers', PUDB_SCORE)
+        pudbScoreNumber.setOrigin(0,0)
                     // colliders ball with paddles
 
       this.physics.add.collider(baw, puda, function(){
@@ -467,14 +478,14 @@ class PongGame extends Phaser.Scene {
       });
           // create overlap zone behind goal posts
       // puda end zone
-      const pudaEndZone = this.physics.add.staticSprite(34, 410, 'blank')
+      let pudaEndZone = this.physics.add.staticSprite(34, 410, 'blankPixel')
       pudaEndZone.setOrigin(0,0)
       pudaEndZone.setSize(20, 500)
 
-     const endZoneAOverlap = this.physics.add.overlap(baw, pudaEndZone, () =>{
-        console.log("Pud B Scored!");
+      let endZoneAOverlap = this.physics.add.overlap(baw, pudaEndZone, () =>{
+        //console.log("Pud B Scored!");
         PUDB_SCORE++
-        pudbScoreNumber.setFrame(PUDB_SCORE)
+        pudbScoreNumber.setFrame(this.PUDB_SCORE)
         endZoneAOverlap.active = false;
         goalCheer.play()
         this.physics.world.timeScale = 3;
@@ -482,14 +493,14 @@ class PongGame extends Phaser.Scene {
       })
 
       //pudb end zone
-      const pudbEndZone = this.physics.add.staticSprite(1280-64+30, 860-410, 'blank')
+      let pudbEndZone = this.physics.add.staticSprite(1280-64+30, 860-410, 'blankPixel')
       pudbEndZone.setOrigin(0,0)
       pudbEndZone.setSize(20, 500)
 
-      const endZoneBOverlap = this.physics.add.overlap(baw, pudbEndZone, () => {
-        console.log("Pud A Scored!");
+      let endZoneBOverlap = this.physics.add.overlap(baw, pudbEndZone, () => {
+        //console.log("Pud A Scored!");
         PUDA_SCORE++
-        pudaScoreNumber.setFrame(PUDA_SCORE)
+        pudaScoreNumber.setFrame(this.PUDA_SCORE)
         endZoneBOverlap.active = false;
         goalCheer.play()
         this.physics.world.timeScale = 3;
@@ -498,12 +509,18 @@ class PongGame extends Phaser.Scene {
     }
     resetCourt() {
         
-        let gameOver = false;
+         gameOver = false;
         if (PUDB_SCORE === 9) {
             gameOver = true;
         let loseImage = this.add.image(1260/2, 860/2, 'loseImage')        
-        let pudbVoiceLose = this.sound.add('pudbVoiceLaugh', {loop: false})
-        pudbVoiceLose.play()
+        let pudbVoiceLaugh = this.sound.add('pudbVoiceLaugh', {loop: false})
+        if (robotVoiceComplete === true) {
+            pudbVoiceLaugh.play()
+        }        
+        robotVoiceComplete = false;
+        pudbVoiceLaugh.on('complete', ()=> {
+            robotVoiceComplete = true;
+        });
             //puda.destroy()
             //pudb.destroy()
             //baw.destroy()
@@ -514,7 +531,13 @@ class PongGame extends Phaser.Scene {
         if (PUDA_SCORE === 9) {
             gameOver = true;
             let pudbVoiceLose = this.sound.add('pudbVoiceLose', {loop: false})
-            pudbVoiceLose.play()
+            if (robotVoiceComplete === true) {
+                pudbVoiceLose.play()
+            }        
+            robotVoiceComplete = false;
+            pudbVoiceLose.on('complete', ()=> {
+                robotVoiceComplete = true;
+            });
             let winImage = this.add.image(1260/2, 860/2, 'winImage')
                 //puda.destroy()
                 //pudb.destroy()
@@ -530,6 +553,8 @@ class PongGame extends Phaser.Scene {
         this.time.delayedCall(2500, ()=> {
             leftGoalPost.destroy()
             rightGoalPost.destroy()
+            pudaScoreNumber.destroy()
+            pudbScoreNumber.destroy()
             puda.destroy()
             pudb.destroy()
             baw.destroy()
@@ -540,14 +565,7 @@ class PongGame extends Phaser.Scene {
 
         }, [], this)
         }
-        
-        
-        //var timer = this.time.delayedCall(20*1000, this.physics.pause());  // delay in ms
 
-        // reset pud a
-        //puda.set
-        // pud b
-        // baw
     }
     formatTime(seconds){
         // Minutes
@@ -565,42 +583,63 @@ class PongGame extends Phaser.Scene {
     {
         this.initialTime -= 1; // One second
         text.setText('Countdown: ' + this.formatTime(this.initialTime));
-        console.log("End");
         if (this.initialTime < 6 && this.initialTime > 0) {
             buzzerSound.play()
         }
         if (this.initialTime < 1){
             console.log("Game Over");
+            this.physics.world.timeScale = 40;
             if (PUDA_SCORE > PUDB_SCORE) {
                 let winImage = this.add.image(1260/2, 860/2, 'winImage')
-                let pudbVoiceLose = this.add.sound('pudbVoiceLose', {loop: false})
-                pudbVoiceLose.play()
+                let pudbVoiceLose = this.sound.add('pudbVoiceLose', {loop: false})
+                if (robotVoiceComplete === true) {
+                    pudbVoiceLose.play()
+                }        
+                robotVoiceComplete = false;
+                pudbVoiceLose.on('complete', ()=> {
+                    robotVoiceComplete = true;
+                });
                 //puda.destroy()
                 //pudb.destroy()
                 //baw.destroy()
                 this.time.delayedCall(9000, ()=> {
+                    bgAmbience.stop()
                     this.scene.start('StartMenu')
                 }, [], this)
             } 
             if (PUDA_SCORE === PUDB_SCORE) {
                 let winImage = this.add.image(1260/2, 860/2, 'winImage')
-                let pudbVoiceLose = this.add.sound('pudbVoiceLose', {loop: false})
-                pudbVoiceLose.play()
+                let pudbVoiceLose = this.sound.add('pudbVoiceLose', {loop: false})
+                if (robotVoiceComplete === true) {
+                    pudbVoiceLose.play()
+                }        
+                robotVoiceComplete = false;
+                pudbVoiceLose.on('complete', ()=> {
+                    robotVoiceComplete = true;
+                });
                 //puda.destroy()
                 //pudb.destroy()
                 //baw.destroy()
                 this.time.delayedCall(9000, ()=> {
+                    bgAmbience.stop()
                     this.scene.start('StartMenu')
                 }, [], this)
             } 
             if (PUDA_SCORE < PUDB_SCORE) {
                 let loseImage = this.add.image(1260/2, 860/2, 'loseImage')      
-                let pudbVoiceLaugh = this.add.sound('pudbVoiceLaugh', {loop: false})
-                pudbVoiceLaugh.play()  
+                let pudbVoiceLaugh = this.sound.add('pudbVoiceLaugh', {loop: false})
+                if (robotVoiceComplete === true) {
+                    pudbVoiceLaugh.play()
+                }        
+                robotVoiceComplete = false;
+                pudbVoiceLaugh.on('complete', ()=> {
+                    robotVoiceComplete = true;
+                });
                 //puda.destroy()
                 //pudb.destroy()
                 //baw.destroy()
                 this.time.delayedCall(9000, ()=> {
+                    bgAmbience.stop()
                     this.scene.start('StartMenu')
                 }, [], this)
             }
