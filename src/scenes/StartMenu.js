@@ -89,7 +89,7 @@ class StartMenu extends Phaser.Scene {
         let startScreenMusic;
         aboutScreen.on('pointerdown', function(){
             aboutScreen.destroy()
-            startScreenMusic = this.sound.play('startMusic', {volume: 0.25});
+            startScreenMusic = this.sound.play('startMusic', {volume: 0.5});
             videoIntro.play(false)
             this.tweenImages()
         }, this)

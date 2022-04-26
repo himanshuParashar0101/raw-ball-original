@@ -9,9 +9,13 @@ import PudA from '../assets/pong/png/pud_left.png'
 import PudB from '../assets/pong/png/pud_right.png'
 import ScoreNumbers from '../assets/pong/png/numbers_score.png'
 import BlankPixel from '../assets/pong/png/blankPixel.png'
+import GoalImage from '../assets/pong/png/text_goal.png'
+import YouLose from '../assets/pong/png/text_lose.png'
+import YouWin from '../assets/pong/png/text_win.png'
 
 import BallKickSound1 from '../assets/pong/sfx/ballKickSound.mp3';
 import GoalCheerSound from '../assets/pong/sfx/crowdGoalcheer.mp3';
+import BuzzerSound from '../assets/pong/sfx/buzzer.mp3';
 //RAWBall - Remote Access Workforce Ball
 // to do:
 
@@ -93,6 +97,7 @@ let pudbScoreNumber
 
 let bounce1;
 let goalCheer;
+let buzzerSound
 
 let bounceSoundComplete = true;
 
@@ -109,6 +114,11 @@ class PongGame extends Phaser.Scene {
     preload() {             
         // invisible barriers
         this.load.image('blankPixel', BlankPixel);
+        // goal image
+        this.load.image('goalImage', GoalImage);
+        // lose image
+        this.load.image('loseImage', YouLose)
+        this.load.image('winImage', YouWin)
         //court
         this.load.image('court2', Court2);
 
@@ -152,6 +162,7 @@ class PongGame extends Phaser.Scene {
         // SFX
         this.load.audio('ballKickSound1', BallKickSound1)
         this.load.audio('goalCheer', GoalCheerSound)
+        this.load.audio('buzzerSound', BuzzerSound)
     }
 
     create() {
@@ -160,7 +171,7 @@ class PongGame extends Phaser.Scene {
         courtLines.setOrigin(0.5,0)
 
         // 2:30 in seconds
-        this.initialTime = 120;
+        this.initialTime = 10;
         text = this.add.text(1280/2-60, 32, 'Countdown: ' + this.formatTime(this.initialTime));
         // Each 1000 ms call onEvent
         timedEvent = this.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, loop: true });
@@ -183,6 +194,8 @@ class PongGame extends Phaser.Scene {
         bounce1 = this.sound.add('ballKickSound1', {loop: false})
         // goal sound        
         goalCheer = this.sound.add('goalCheer', {loop: false})
+        // buzzer sound
+        buzzerSound = this.sound.add('buzzerSound', {loop: false})
         
         let paddleDefaultWidth = 46;
         let paddleDefaultHeight = 150;
@@ -379,18 +392,18 @@ class PongGame extends Phaser.Scene {
         enemySpeedMod = 0.5
     }
     if (ballX < pudbX) {
-        pudb.setVelocityX(-currentSpeed*enemySpeedMod)
+        pudb.setVelocityX(-250*enemySpeedMod)
     }
     if (ballX > pudbX) {
-        pudb.setVelocityY(currentSpeed*enemySpeedMod)
+        pudb.setVelocityY(250*enemySpeedMod)
     }
     // ^
     if (ballY > pudbY) {
-        pudb.setVelocityY(currentSpeed*enemySpeedMod)
+        pudb.setVelocityY(250*enemySpeedMod)
     }
     // down
     if (ballY < pudbY) {
-        pudb.setVelocityY(-currentSpeed*enemySpeedMod)
+        pudb.setVelocityY(-250*enemySpeedMod)
     }
 
 
@@ -462,17 +475,44 @@ class PongGame extends Phaser.Scene {
       })
     }
     resetCourt() {
-        //this.physics.pause()
-        this.time.delayedCall(1000, ()=> {
+        
+        let gameOver = false;
+        if (PUDB_SCORE === 9) {
+            gameOver = true;
+        let loseImage = this.add.image(1260/2, 860/2, 'loseImage')        
+            //puda.destroy()
+            //pudb.destroy()
+            //baw.destroy()
+            this.time.delayedCall(5000, ()=> {
+                this.scene.start('StartMenu')
+            }, [], this)
+        }
+        if (PUDA_SCORE === 9) {
+            gameOver = true;
+            let winImage = this.add.image(1260/2, 860/2, 'winImage')
+                //puda.destroy()
+                //pudb.destroy()
+                //baw.destroy()
+                this.time.delayedCall(5000, ()=> {
+                    this.scene.start('StartMenu')
+                }, [], this)
+        }
+        // if my score 9 you win
+        if (gameOver === false) {
+            let goalImage = this.add.image(1260/2, 860/2, 'goalImage')
+                    //this.physics.pause()
+        this.time.delayedCall(2500, ()=> {
             puda.destroy()
             pudb.destroy()
             baw.destroy()
-
+            goalImage.destroy()
             this.createCourt()
 
         this.physics.world.timeScale = 1;
 
         }, [], this)
+        }
+        
         
         //var timer = this.time.delayedCall(20*1000, this.physics.pause());  // delay in ms
 
@@ -498,6 +538,40 @@ class PongGame extends Phaser.Scene {
         this.initialTime -= 1; // One second
         text.setText('Countdown: ' + this.formatTime(this.initialTime));
         console.log("End");
+        if (this.initialTime < 6 && this.initialTime > 0) {
+            buzzerSound.play()
+        }
+        if (this.initialTime < 1){
+            console.log("Game Over");
+            if (PUDA_SCORE > PUDB_SCORE) {
+                let winImage = this.add.image(1260/2, 860/2, 'winImage')
+                //puda.destroy()
+                //pudb.destroy()
+                //baw.destroy()
+                this.time.delayedCall(3000, ()=> {
+                    this.scene.start('StartMenu')
+                }, [], this)
+            } 
+            if (PUDA_SCORE === PUDB_SCORE) {
+                let winImage = this.add.image(1260/2, 860/2, 'winImage')
+                //puda.destroy()
+                //pudb.destroy()
+                //baw.destroy()
+                this.time.delayedCall(3000, ()=> {
+                    this.scene.start('StartMenu')
+                }, [], this)
+            } 
+            if (PUDA_SCORE < PUDB_SCORE) {
+                let loseImage = this.add.image(1260/2, 860/2, 'loseImage')        
+                //puda.destroy()
+                //pudb.destroy()
+                //baw.destroy()
+                this.time.delayedCall(3000, ()=> {
+                    this.scene.start('StartMenu')
+                }, [], this)
+            }
+        }
+
     }
 
 
