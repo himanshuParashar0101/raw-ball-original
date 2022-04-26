@@ -11,7 +11,7 @@ import ScoreNumbers from '../assets/pong/png/numbers_score.png'
 import BlankPixel from '../assets/pong/png/blankPixel.png'
 
 import BallKickSound1 from '../assets/pong/sfx/ballKickSound.mp3';
-
+import GoalCheerSound from '../assets/pong/sfx/crowdGoalcheer.mp3';
 //RAWBall - Remote Access Workforce Ball
 // to do:
 
@@ -24,6 +24,9 @@ import BallKickSound1 from '../assets/pong/sfx/ballKickSound.mp3';
 // when enemy score is 9 you lose
 
 //reset ball and puds
+
+// add back button
+
 
 // shift slow speed + curve hit
 // space fast dash + strong hit
@@ -79,7 +82,17 @@ let fastMovementSpeed = 500;
 let currentSpeed;
 let bawShadow, baw;
 
+let ballY;
+let ballX;
+
+let pudbX;
+let pudbY;
+
+let pudaScoreNumber;
+let pudbScoreNumber
+
 let bounce1;
+let goalCheer;
 
 // timer
 var text;
@@ -136,6 +149,7 @@ class PongGame extends Phaser.Scene {
 
         // SFX
         this.load.audio('ballKickSound1', BallKickSound1)
+        this.load.audio('goalCheer', GoalCheerSound)
     }
 
     create() {
@@ -145,9 +159,7 @@ class PongGame extends Phaser.Scene {
 
         // 2:30 in seconds
         this.initialTime = 120;
-
         text = this.add.text(1280/2-60, 32, 'Countdown: ' + this.formatTime(this.initialTime));
-
         // Each 1000 ms call onEvent
         timedEvent = this.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, loop: true });
 
@@ -167,6 +179,8 @@ class PongGame extends Phaser.Scene {
 
         // ball sounds
         bounce1 = this.sound.add('ballKickSound1', {loop: false})
+        // goal sound        
+        goalCheer = this.sound.add('goalCheer', {loop: false})
         
         let paddleDefaultWidth = 46;
         let paddleDefaultHeight = 150;
@@ -224,41 +238,42 @@ class PongGame extends Phaser.Scene {
       let rightGoalPost = this.add.image(1280-138, 120, 'rightGoalPost').setOrigin(0,0)
 
         // score boards
-        let pudaScoreNumber = this.add.sprite(20, 860/2-35, 'scoreNumbers', PUDA_SCORE)
+        pudaScoreNumber = this.add.sprite(20, 860/2-35, 'scoreNumbers', PUDA_SCORE)
         pudaScoreNumber.setOrigin(0,0)
             
-        let pudbScoreNumber = this.add.sprite(1280-80, 860/2-35, 'scoreNumbers', PUDB_SCORE)
+        pudbScoreNumber = this.add.sprite(1280-80, 860/2-35, 'scoreNumbers', PUDB_SCORE)
         pudbScoreNumber.setOrigin(0,0)
 
       // create overlap zone behind goal posts
       // puda end zone
-      const pudaEndZone = this.physics.add.staticSprite(64, 410, 'blank')
+      const pudaEndZone = this.physics.add.staticSprite(34, 410, 'blank')
       pudaEndZone.setOrigin(0,0)
-      pudaEndZone.setSize(100, 500)
+      pudaEndZone.setSize(20, 500)
 
      const endZoneAOverlap = this.physics.add.overlap(baw, pudaEndZone, () =>{
         console.log("Pud B Scored!");
         PUDB_SCORE++
         pudbScoreNumber.setFrame(PUDB_SCORE)
         endZoneAOverlap.active = false;
-          
+        goalCheer.play()
+        this.physics.world.timeScale = 4;
+          this.resetCourt()
       })
 
       //pudb end zone
-      const pudbEndZone = this.physics.add.staticSprite(1280-64, 860-410, 'blank')
+      const pudbEndZone = this.physics.add.staticSprite(1280-64+30, 860-410, 'blank')
       pudbEndZone.setOrigin(0,0)
-      pudbEndZone.setSize(100, 500)
+      pudbEndZone.setSize(20, 500)
 
       const endZoneBOverlap = this.physics.add.overlap(baw, pudbEndZone, () => {
         console.log("Pud A Scored!");
         PUDA_SCORE++
         pudaScoreNumber.setFrame(PUDA_SCORE)
         endZoneBOverlap.active = false;
+        goalCheer.play()
+        this.physics.world.timeScale = 6;
+        this.resetCourt()
       })
-
-
-
-
 
 
       // controls
@@ -267,8 +282,7 @@ class PongGame extends Phaser.Scene {
     A_KEY = this.input.keyboard.addKey('A');  // Get key object
     D_KEY = this.input.keyboard.addKey('D');  // Get key object
     SPACE_KEY = this.input.keyboard.addKey('SPACE')
-    
-    
+  
 
     }
     
@@ -324,20 +338,101 @@ class PongGame extends Phaser.Scene {
     //bawShadow.x = baw.x; bawShadow.y = baw.y
 
     // if ball goes into endzone A
-  
-
-    }
-
-    pudAScored() {
-        // play cheer sound
-        //resetCourt()
-    }
-
-    pudBScored() {
-
-    }
     
+    
+    //  enemy AI
+    // get ball position
+    // move pudb toward position + with additional Y to aim toward puda goal
+    
+    ballX = baw.x;
+    ballY = baw.y
+
+    pudbX = pudb.x;
+    pudbY = pudb.y;
+
+
+    }
+
+    createCourt() {
+                            //paddle A
+       puda = this.physics.add.sprite(pudaStartingX, pudaStartingY, 'puda')
+       puda.setScale(.5)
+       puda.setOrigin(0,.5)
+       puda.setBounce(1,1)
+       puda.setCollideWorldBounds(true)
+
+
+        //paddle B
+       pudb = this.physics.add.sprite(pudbStartingX, pudbStartingY, 'pudb')
+       pudb.setScale(.5)
+       pudb.setOrigin(0,.5)
+       pudb.setBounce(1,1)
+       pudb.setCollideWorldBounds(true)
+
+               // ball
+               baw = this.physics.add.sprite(1280/2, 860/2, 'baw', 0)
+               baw.setCircle(23)
+               baw.setOrigin(0.5,0.5)
+               baw.setVelocity(0,0)
+               baw.setBounce(1,1)
+               baw.setCollideWorldBounds(true); 
+
+                    // colliders ball with paddles
+
+      this.physics.add.collider(baw, puda, function(){
+        
+        //bounce1.on('complete', listener);
+        bounce1.play()
+      });
+      this.physics.add.collider(baw, pudb, function(){
+        bounce1.play()
+      });
+          // create overlap zone behind goal posts
+      // puda end zone
+      const pudaEndZone = this.physics.add.staticSprite(34, 410, 'blank')
+      pudaEndZone.setOrigin(0,0)
+      pudaEndZone.setSize(20, 500)
+
+     const endZoneAOverlap = this.physics.add.overlap(baw, pudaEndZone, () =>{
+        console.log("Pud B Scored!");
+        PUDB_SCORE++
+        pudbScoreNumber.setFrame(PUDB_SCORE)
+        endZoneAOverlap.active = false;
+        goalCheer.play()
+        this.physics.world.timeScale = 3;
+          this.resetCourt()
+      })
+
+      //pudb end zone
+      const pudbEndZone = this.physics.add.staticSprite(1280-64+30, 860-410, 'blank')
+      pudbEndZone.setOrigin(0,0)
+      pudbEndZone.setSize(20, 500)
+
+      const endZoneBOverlap = this.physics.add.overlap(baw, pudbEndZone, () => {
+        console.log("Pud A Scored!");
+        PUDA_SCORE++
+        pudaScoreNumber.setFrame(PUDA_SCORE)
+        endZoneBOverlap.active = false;
+        goalCheer.play()
+        this.physics.world.timeScale = 3;
+        this.resetCourt()
+      })
+    }
     resetCourt() {
+        //this.physics.pause()
+        this.time.delayedCall(1000, ()=> {
+            puda.destroy()
+            pudb.destroy()
+            baw.destroy()
+
+            this.createCourt()
+
+        this.physics.world.timeScale = 1;
+
+        }, [], this)
+        
+        //var timer = this.time.delayedCall(20*1000, this.physics.pause());  // delay in ms
+
         // reset pud a
         //puda.set
         // pud b
