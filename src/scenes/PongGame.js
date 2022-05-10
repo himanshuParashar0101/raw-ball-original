@@ -1,8 +1,8 @@
 import Phaser, { Scene } from 'phaser';
-import Court2 from '../assets/pong/png/courtMars.png'
+import Court2 from '../assets/pong/png/court_02.png'
 import CourtLines from '../assets/pong/png/court_center_btn_pause.png'
-import LeftGoalPost from '../assets/pong/png/goal_posts_leftMars.png'
-import RightGoalPost from '../assets/pong/png/goal_posts_rightMars.png'
+import LeftGoalPost from '../assets/pong/png/goal_posts_left.png'
+import RightGoalPost from '../assets/pong/png/goal_posts_right.png'
 import Baw from '../assets/pong/png/ball_frames.png'
 import BawShadow from '../assets/pong/png/ball_shadow.png'
 import PudA from '../assets/pong/png/pud_left.png'
@@ -17,7 +17,7 @@ import BlueSparks from '../assets/pong/png/blue.png'
 import BallKickSound1 from '../assets/pong/sfx/ballKickSound.mp3';
 import GoalCheerSound from '../assets/pong/sfx/crowdGoalcheer.mp3';
 import BuzzerSound from '../assets/pong/sfx/buzzer.mp3';
-import BgAmbience from '../assets/pong/sfx/arena.mp3'
+//import BgAmbience from '../assets/pong/sfx/arena.mp3'
 
 
 import PudbVoiceLose from '../assets/pong/sfx/pudbVoiceLose.mp3';
@@ -139,7 +139,7 @@ class PongGame extends Phaser.Scene {
         this.load.audio('pudbVoiceLose', PudbVoiceLose)
         this.load.audio('pudbVoiceLaugh', PudbVoiceLaugh)
         this.load.audio('pudbVoiceStart', PudbVoiceStart)
-        this.load.audio('bgAmbience', BgAmbience)
+        //this.load.audio('bgAmbience', BgAmbience)
 
     }
 
@@ -177,8 +177,8 @@ class PongGame extends Phaser.Scene {
         // buzzer sound
         buzzerSound = this.sound.add('buzzerSound', {loop: false})
         // bg ambience
-        bgAmbience = this.sound.add('bgAmbience', {loop: false})
-        bgAmbience.play()
+        //bgAmbience = this.sound.add('bgAmbience', {loop: false})
+        //bgAmbience.play()
 
 
         

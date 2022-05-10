@@ -1,14 +1,16 @@
 import Phaser, { Scene } from 'phaser';
 
-import GafferGreeting from '../assets/pong/png/gafferGreeting.png'
+import ConnectButton from '../assets/pong/png/ConnectButton.png'
+import ConnectedButton from '../assets/pong/png/ConnectedButton.png'
+import GetMetaMaskButton from '../assets/pong/png/GetMetaMaskButton.png'
 
 import StartMusic from '../assets/pong/sfx/StartMusic.mp3'
 import StartVideo from '../assets/pong/vid/mars1_1.mp4'
-import CourtBg from '../assets/pong/png/courtMars.png'
+import CourtBg from '../assets/pong/png/court_02.png'
 
-import LeftGoalPost from '../assets/pong/png/goal_posts_leftMars.png'
-import RightGoalPost from '../assets/pong/png/goal_posts_rightMars.png'
-import Roof from '../assets/pong/png/roofMars.png'
+import LeftGoalPost from '../assets/pong/png/goal_posts_left.png'
+import RightGoalPost from '../assets/pong/png/goal_posts_right.png'
+import Roof from '../assets/pong/png/court_roof.png'
 import GameLogo from '../assets/pong/png/rawballLogo.png'
 
 import StartButton from '../assets/pong/png/startButton.png'
@@ -18,12 +20,15 @@ import BallKickSound1 from '../assets/pong/sfx/ballKickSound.mp3';
 import MediumCheer6 from '../assets/pong/sfx/medcheer6.mp3';
 
 
-var courtBg;
-var leftGoalPost;
-var rightGoalPost;
-var roof;
-var gameLogo;
-var startButton;
+var courtBg,
+ leftGoalPost,
+ rightGoalPost,
+ roof,
+ gameLogo,
+ startButton,
+ connectButton,
+ connectedButton,
+ getMetaMaskButton;
 
 // tween the images to snap into position quickly
 
@@ -54,7 +59,11 @@ class StartMenu extends Phaser.Scene {
     }
 
     preload() {        
-        this.load.image('gafferGreeting', GafferGreeting)
+
+        this.load.image('connectButton', ConnectButton)
+        this.load.image('connectedButton', ConnectedButton)
+        this.load.image('getMetaMaskButton', GetMetaMaskButton)
+
         this.load.audio('startMusic', StartMusic)     
         this.load.video('startVideo', StartVideo, 'videoReady', false, true)
 
@@ -83,16 +92,15 @@ class StartMenu extends Phaser.Scene {
          roof = this.add.image(1280/5+10, -300, 'roof').setOrigin(0,0)
          gameLogo = this.add.image(1280/4+55, -286, 'logo').setOrigin(0,0)
          startButton = this.add.image(1280/2, -376, 'startButton').setOrigin(0.5,.5).setInteractive();
-
+         connectButton = this.add.image(1280/2, 376, 'connectButton').setOrigin(0.5,.5).setInteractive();
             
-        let aboutScreen = this.add.image(0, 0, 'gafferGreeting').setOrigin(0).setInteractive()
+
         let startScreenMusic;
-        aboutScreen.on('pointerdown', function(){
-            aboutScreen.destroy()
-            startScreenMusic = this.sound.play('startMusic', {volume: 0.5});
-            videoIntro.play(false)
-            this.tweenImages()
-        }, this)
+
+        //startScreenMusic = this.sound.play('startMusic', {volume: 0.05});
+        videoIntro.play(false)
+        this.tweenImages()
+
 
         startButton.on('pointerdown', function (){
             this.game.sound.stopAll();
@@ -101,6 +109,9 @@ class StartMenu extends Phaser.Scene {
             this.scene.start('PongGame')
         }, this)
 
+        connectButton.on('pointerdown', function (){
+            console.log("Connecting to MetaMask");
+        })
 
     }
     tweenImages() {
@@ -131,8 +142,8 @@ class StartMenu extends Phaser.Scene {
         });
         this.tweens.add({
             targets: roof,
-            y: -60,
-            duration: 1000,
+            y: -10,
+            duration: 800,
             ease: 'Linear',
             yoyo: false,
             delay: 7300
@@ -145,6 +156,8 @@ class StartMenu extends Phaser.Scene {
             yoyo: false,
             delay: 7300
         });
+        // start button
+        /*
         this.tweens.add({
             targets: startButton,
             y: 860/2,
@@ -153,6 +166,7 @@ class StartMenu extends Phaser.Scene {
             yoyo: false,
             delay: 7500
         });
+        */
 }
     update() {
 

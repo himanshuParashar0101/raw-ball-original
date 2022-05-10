@@ -1,0 +1,1 @@
+import Phaser, { Scene } from 'phaser';
