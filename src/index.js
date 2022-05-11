@@ -9,6 +9,8 @@ const GAME_WIDTH = 1280;
 const config = {
     type: Phaser.AUTO,
     parent: 'phaser-example',
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+    mode: Phaser.Scale.FIT,
     width: GAME_WIDTH,
     height: GAME_HEIGHT,
     parent: 'gameContainer',

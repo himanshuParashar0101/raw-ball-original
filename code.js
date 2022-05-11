@@ -47,7 +47,6 @@ function gunSend() {
 
 
 
-
 chatLog.on((data) => { 
     console.log("received", data);
 
