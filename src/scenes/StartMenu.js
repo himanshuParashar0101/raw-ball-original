@@ -1,5 +1,8 @@
 import Phaser, { Scene } from 'phaser';
 import Onboarding from '@metamask/onboarding';
+import GUN from 'gun';
+const gun = GUN(['https://gun-manhattan.herokuapp.com/gun']);
+
 
 import ConnectButton from '../assets/pong/png/ConnectButton.png'
 import ConnectedButton from '../assets/pong/png/ConnectedButton.png'
@@ -20,6 +23,8 @@ import StartButton from '../assets/pong/png/startButton.png'
 import BallKickSound1 from '../assets/pong/sfx/ballKickSound.mp3';
 import MediumCheer6 from '../assets/pong/sfx/medcheer6.mp3';
 
+const GAME_HEIGHT = 860;
+const GAME_WIDTH = 1280;
 
 var courtBg,
  leftGoalPost,
@@ -51,13 +56,15 @@ var courtBg,
 
 //basic match making for participants to be able to play
 
-
+var chatLog = gun.get('testChatApp5501').get('messageList');
 
 class StartMenu extends Phaser.Scene {
 
     constructor() {
         super('StartMenu');
     }
+
+  
 
     preload() {        
 
@@ -118,6 +125,32 @@ class StartMenu extends Phaser.Scene {
             this.metaMaskConnect()
         }, this)
 
+        // create rectangle graphics,
+        this.graphics = this.add.graphics()
+        this.graphics.lineStyle(1, 0xFFFFFF, 1.0);
+        this.graphics.fillStyle(0x000000, .1);
+        this.graphics.fillRect(0, GAME_HEIGHT-200, GAME_WIDTH-400, 200);
+        this.graphics.strokeRect(0, GAME_HEIGHT-200, GAME_WIDTH-400, 200);
+        // bake into texture with generateTexture
+        // put text lines inside rectangle
+        // if text is above Y value, dissappear
+        // or check scrolling text box code: https://phaser.io/examples/v3/view/input/dragging/scrolling-text-box
+
+        
+        // how to implement chat scrolling ////////////////////////////////////////
+        // make a constructor for text
+        // each message is a new ChatText
+        // previous chat text array Y positions moved up
+        // if text Y > some value, dont display
+        
+
+        chatLog.on((data) => {      
+            let thisMessage = data;
+            thisMessage = thisMessage.trim()
+            thisMessage = thisMessage.replace(/\n|\r/g, "");
+            console.log("received", thisMessage);
+            this.add.text(0, GAME_HEIGHT-20, thisMessage, { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif' });
+            });
     }
 
     tweenImages() {

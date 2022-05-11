@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "@metamask/onboarding": "^1.0.1",
+    "gun": "^0.2020.1237",
     "phaser": "^3.50.0",
     "phaser3-planck": "^0.0.4",
     "phaser3-rex-plugins": "^1.1.68"
