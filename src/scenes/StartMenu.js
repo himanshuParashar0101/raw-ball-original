@@ -1,4 +1,5 @@
 import Phaser, { Scene } from 'phaser';
+import Onboarding from '@metamask/onboarding';
 
 import ConnectButton from '../assets/pong/png/ConnectButton.png'
 import ConnectedButton from '../assets/pong/png/ConnectedButton.png'
@@ -92,8 +93,11 @@ class StartMenu extends Phaser.Scene {
          roof = this.add.image(1280/5+10, -300, 'roof').setOrigin(0,0)
          gameLogo = this.add.image(1280/4+55, -286, 'logo').setOrigin(0,0)
          startButton = this.add.image(1280/2, -376, 'startButton').setOrigin(0.5,.5).setInteractive();
-         connectButton = this.add.image(1280/2, 376, 'connectButton').setOrigin(0.5,.5).setInteractive();
+         connectButton = this.add.image(1280/2, -376, 'connectButton').setOrigin(0.5,.5).setInteractive();
+         connectedButton = this.add.image(1280/2, -376, 'connectedButton').setOrigin(0.5,.5).setInteractive();
+         getMetaMaskButton = this.add.image(1280/2, -376, 'getMetaMaskButton').setOrigin(0.5,.5).setInteractive();
             
+        this.web3Intialize();
 
         let startScreenMusic;
 
@@ -110,12 +114,13 @@ class StartMenu extends Phaser.Scene {
         }, this)
 
         connectButton.on('pointerdown', function (){
-            console.log("Connecting to MetaMask");
-        })
+            console.log("Attempting Connecting to MetaMask");
+            this.metaMaskConnect()
+        }, this)
 
     }
+
     tweenImages() {
-        // tween testing
         this.tweens.add({
             targets: courtBg,
             y: 0,
@@ -167,7 +172,128 @@ class StartMenu extends Phaser.Scene {
             delay: 7500
         });
         */
-}
+    }
+
+    web3Intialize (){
+
+            console.log("Contract Initializing");
+              //Basic Actions Section
+              //const onboardButton = document.getElementById('connectButton');
+              //const getAccountsButton = document.getElementById('getAccounts');
+              //const getAccountsResult = document.getElementById('getAccountsResult');
+          
+              //Created check function to see if the MetaMask extension is installed
+              const isMetaMaskInstalled = () => {
+                //Have to check the ethereum binding on the window object to see if it's installed
+                const { ethereum } = window;
+                console.log("MetaMask Installed? = " + Boolean(ethereum && ethereum.isMetaMask));
+                return Boolean(ethereum && ethereum.isMetaMask);
+                
+                // to test if not installed
+                //return false;
+              };
+          
+              //We create a new MetaMask onboarding object to use in our app
+              const onboarding = new MetaMaskOnboarding('http://localhost:8080');
+          
+          
+              //Next we need to create a MetaMaskClientCheck function to see if we need to change the 
+              //button text based on if the MetaMask Extension is installed or not.
+              const MetaMaskClientCheck = () => {
+                //Eth_Accounts-getAccountsButton
+                /*
+                getAccountsButton.addEventListener('click', async () => {
+                  //we use eth_accounts because it returns a list of addresses owned by us.
+                  const accounts = await ethereum.request({ method: 'eth_accounts' });
+                  //We take the first address in the array of addresses and display it
+                  getAccountsResult.innerHTML = accounts[0] || 'Not able to get accounts';
+                });
+                */
+                //Now we check to see if MetaMask is installed
+                if (!isMetaMaskInstalled()) {
+                    console.log("MetaMask Not Detected");
+                  //If it isn't installed we ask the user to click to install it
+                  //onboardButton.innerText = 'Click here to install MetaMask!';
+                  //When the button is clicked we call this function
+                  //onboardButton.onclick = onClickInstall;
+                  //The button is now disabled
+                  //onboardButton.disabled = false;
+                  // show Get MetaMask button
+                  this.tweens.add({
+                      targets: getMetaMaskButton,
+                      y: 376,
+                      duration: 800,
+                      ease: 'Linear',
+                      yoyo: false,
+                      delay: 7300
+                  });
+                
+                  
+                } else {
+                  //If MetaMask is installed we ask the user to connect to their wallet
+                  //onboardButton.innerText = 'Connect';
+                  //When the button is clicked we call this function to connect the users MetaMask Wallet
+                  //onboardButton.onclick = onClickConnect;
+                  //The button is now disabled
+                  //onboardButton.disabled = false;
+
+                  // show connect button
+                  this.tweens.add({
+                    targets: connectButton,
+                    y: 376,
+                    duration: 800,
+                    ease: 'Linear',
+                    yoyo: false,
+                    delay: 7300
+                });
+
+                }
+              };
+              MetaMaskClientCheck();
+    }
+
+    metaMaskInstall() {
+        //onboardButton.innerText = 'Onboarding in progress';
+        //onboardButton.disabled = true;
+        //On this object we have startOnboarding which will start the onboarding process for our end user
+        Onboarding.startOnboarding();
+    }
+    async metaMaskConnect() {
+        try {
+            // Will open the MetaMask UI
+            // You should disable this button while the request is pending!
+            await ethereum.request({ method: 'eth_requestAccounts' });
+            connectButton.destroy();
+            const accounts = await ethereum.request({ method: 'eth_accounts' });            
+            localStorage.setItem('userName', accounts[0])
+            this.tweens.add({
+                targets: connectedButton,
+                y: 376,
+                duration: 0,
+                ease: 'Linear',
+                yoyo: false,                
+            })
+            this.tweens.add({
+                targets: connectedButton,
+                y: -376,
+                duration: 500,
+                ease: 'Linear',
+                yoyo: false,
+                delay: 2000
+            })
+            this.tweens.add({
+                targets: startButton,
+                y: 376,
+                duration: 800,
+                ease: 'Bounce',
+                yoyo: false,
+                delay: 3000
+            })
+          } catch (error) {
+            console.error(error);
+          }
+    }
+
     update() {
 
     }
