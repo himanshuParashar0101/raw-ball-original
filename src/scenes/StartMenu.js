@@ -83,8 +83,7 @@ class StartMenu extends Phaser.Scene {
     constructor() {
         super('StartMenu');
     }
-
-  
+ 
 
     preload() {        
 
@@ -107,8 +106,7 @@ class StartMenu extends Phaser.Scene {
         this.load.image('startButton', StartButton)
 
         // text input
-        this.load.html('textInput','<input type="text" name="nameField" placeholder="Enter your name" style="font-size: 32px">\
-        <input type="button" name="playButton" value="Chat" style="font-size: 32px">')
+        this.load.html('textInput', 'textInput.html')
     }
 
     create() {
@@ -127,15 +125,8 @@ class StartMenu extends Phaser.Scene {
          connectedButton = this.add.image(1280/2, -376, 'connectedButton').setOrigin(0.5,.5).setInteractive();
          getMetaMaskButton = this.add.image(1280/2, -376, 'getMetaMaskButton').setOrigin(0.5,.5).setInteractive();
 
-         /*
-            Chat Functionality
-         */
-    var text = this.add.text(0, GAME_HEIGHT-100, 'Type Message...', { color: 'white', fontSize: '14px '});
-    var element = this.add.dom(0, GAME_HEIGHT-100).createFromCache('nameform');
-    element.addListener('click');
-    element.on('click', function (event) {
-        //code here
-    })
+
+
         this.web3Intialize();
 
         let startScreenMusic;
@@ -158,11 +149,11 @@ class StartMenu extends Phaser.Scene {
         }, this)
 
         // create rectangle graphics,
-        this.graphics = this.add.graphics()
-        this.graphics.lineStyle(1, 0xFFFFFF, 1.0);
-        this.graphics.fillStyle(0x000000, .1);
-        this.graphics.fillRect(0, GAME_HEIGHT-200, GAME_WIDTH-400, 200);
-        this.graphics.strokeRect(0, GAME_HEIGHT-200, GAME_WIDTH-400, 200);
+        //this.graphics = this.add.graphics()
+        //this.graphics.lineStyle(1, 0xFFFFFF, 1.0);
+        //this.graphics.fillStyle(0x000000, .1);
+        //this.graphics.fillRect(0, GAME_HEIGHT-200, GAME_WIDTH-400, 200);
+        //this.graphics.strokeRect(0, GAME_HEIGHT-200, GAME_WIDTH-400, 200);
         // bake into texture with generateTexture
         // put text lines inside rectangle
         // if text is above Y value, dissappear
@@ -175,6 +166,13 @@ class StartMenu extends Phaser.Scene {
         // previous chat text array Y positions moved up
         // if text Y > some value, dont display
         
+
+         /*
+            Chat Functionality
+         */
+        //this.text = this.add.text(8, GAME_HEIGHT-30, 'Type Message...', { color: 'white', fontSize: '14px '});
+        this.textInputHTML = this.add.dom(10, 250).createFromCache('textInput')
+
 
         chatLog.on((data) => {      
             let thisMessage = data;

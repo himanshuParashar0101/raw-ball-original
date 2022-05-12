@@ -14,6 +14,9 @@ const config = {
     width: GAME_WIDTH,
     height: GAME_HEIGHT,
     parent: 'gameContainer',
+    dom: {
+      createContainer: true
+    },
     physics: {
         default: 'arcade',
         arcade: {
