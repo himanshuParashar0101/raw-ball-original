@@ -107,6 +107,8 @@ class StartMenu extends Phaser.Scene {
 
         // text input
         this.load.html('textInput', 'textInput.html')
+        //this.load.plugin('rexinputtextplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexinputtextplugin.min.js', true);
+
     }
 
     create() {
@@ -170,16 +172,17 @@ class StartMenu extends Phaser.Scene {
          /*
             Chat Functionality
          */
-        //this.text = this.add.text(8, GAME_HEIGHT-30, 'Type Message...', { color: 'white', fontSize: '14px '});
-        this.textInputHTML = this.add.dom(10, 250).createFromCache('textInput')
-
+        //this.text = this.add.text(8, GAME_HEIGHT-30, 'Type Message...', { color: 'white', fontSize: '14px '}); 
+        let chatInput = '<input type="text" name="textInput" placeholder="Type to Chat" style="font-size: 26px; width: 500px"><input type="button" name="sendButton" value="Chat" style="font-size: 26px">'
+        this.add.dom(8, GAME_HEIGHT-40).createFromHTML(chatInput).setOrigin(0,0)
+        //var textInput = this.add.dom(8, GAME_HEIGHT-25).createFromCache('textInput').setOrigin(0,0)
 
         chatLog.on((data) => {      
             let thisMessage = data;
-            thisMessage = thisMessage.trim()
+            thisMessage = thisMessage.trim();
             thisMessage = thisMessage.replace(/\n|\r/g, "");
             console.log("received", thisMessage);
-            this.add.text(0, GAME_HEIGHT-20, thisMessage, { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif' });
+            this.add.text(8, GAME_HEIGHT-80, thisMessage);
             let newMessage = new ChatText(localStorage.userName, thisMessage);
             newMessage.sendMessage()
             });
