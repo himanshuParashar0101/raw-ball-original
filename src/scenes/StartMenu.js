@@ -3,7 +3,6 @@ import Onboarding from '@metamask/onboarding';
 import GUN from 'gun';
 const gun = GUN(['https://gun-manhattan.herokuapp.com/gun']);
 
-
 import ConnectButton from '../assets/pong/png/ConnectButton.png'
 import ConnectedButton from '../assets/pong/png/ConnectedButton.png'
 import GetMetaMaskButton from '../assets/pong/png/GetMetaMaskButton.png'
@@ -18,7 +17,6 @@ import Roof from '../assets/pong/png/court_roof.png'
 import GameLogo from '../assets/pong/png/rawballLogo.png'
 
 import StartButton from '../assets/pong/png/startButton.png'
-
 
 import BallKickSound1 from '../assets/pong/sfx/ballKickSound.mp3';
 import MediumCheer6 from '../assets/pong/sfx/medcheer6.mp3';
@@ -55,6 +53,28 @@ var courtBg,
 
 
 //basic match making for participants to be able to play
+/*
+get chat data from gun, push to chatTextArray
+userName from browser inputs message somewhere
+message sent via gun
+on new data display chat
+push new data to chatTextArray
+
+*/
+let chatTextArray = [];
+class ChatText {
+    constructor(userName, message) {
+        /* ... */ 
+        this.userName = userName;
+        this.message = message;
+    }
+    sendMessage() {
+        console.log(`${this.userName}: `+ this.message);
+        chatTextArray.push({userName: this.userName, message: this.message});
+    }
+}
+const firstMessage = new ChatText("T", "Hello World")
+firstMessage.sendMessage()
 
 var chatLog = gun.get('testChatApp5501').get('messageList');
 
@@ -85,7 +105,10 @@ class StartMenu extends Phaser.Scene {
         this.load.image('roof', Roof)
         this.load.image('logo', GameLogo)
         this.load.image('startButton', StartButton)
-        
+
+        // text input
+        this.load.html('textInput','<input type="text" name="nameField" placeholder="Enter your name" style="font-size: 32px">\
+        <input type="button" name="playButton" value="Chat" style="font-size: 32px">')
     }
 
     create() {
@@ -103,7 +126,16 @@ class StartMenu extends Phaser.Scene {
          connectButton = this.add.image(1280/2, -376, 'connectButton').setOrigin(0.5,.5).setInteractive();
          connectedButton = this.add.image(1280/2, -376, 'connectedButton').setOrigin(0.5,.5).setInteractive();
          getMetaMaskButton = this.add.image(1280/2, -376, 'getMetaMaskButton').setOrigin(0.5,.5).setInteractive();
-            
+
+         /*
+            Chat Functionality
+         */
+    var text = this.add.text(0, GAME_HEIGHT-100, 'Type Message...', { color: 'white', fontSize: '14px '});
+    var element = this.add.dom(0, GAME_HEIGHT-100).createFromCache('nameform');
+    element.addListener('click');
+    element.on('click', function (event) {
+        //code here
+    })
         this.web3Intialize();
 
         let startScreenMusic;
@@ -150,7 +182,10 @@ class StartMenu extends Phaser.Scene {
             thisMessage = thisMessage.replace(/\n|\r/g, "");
             console.log("received", thisMessage);
             this.add.text(0, GAME_HEIGHT-20, thisMessage, { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif' });
+            let newMessage = new ChatText(localStorage.userName, thisMessage);
+            newMessage.sendMessage()
             });
+
     }
 
     tweenImages() {

@@ -3,8 +3,6 @@ var SEA = Gun.SEA;
 
 
 
-
-
 var chatLog = gun.get('testChatApp5501').get('messageList');
 
 
