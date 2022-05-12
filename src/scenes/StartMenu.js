@@ -173,8 +173,17 @@ class StartMenu extends Phaser.Scene {
             Chat Functionality
          */
         //this.text = this.add.text(8, GAME_HEIGHT-30, 'Type Message...', { color: 'white', fontSize: '14px '}); 
-        let chatInput = '<input type="text" name="textInput" placeholder="Type to Chat" style="font-size: 26px; width: 500px"><input type="button" name="sendButton" value="Chat" style="font-size: 26px">'
-        this.add.dom(8, GAME_HEIGHT-40).createFromHTML(chatInput).setOrigin(0,0)
+        let chatInputHTML = '<input type="text" name="textInput" placeholder="Type to Chat" style="font-size: 26px; width: 500px">'
+        let chatButtonHTML = '<input type="button" name="sendButton" value="Chat" style="font-size: 26px">'
+        let chatInput = this.add.dom(8, GAME_HEIGHT-40).createFromHTML(chatInputHTML).setOrigin(0)
+        let chatButton = this.add.dom(508, GAME_HEIGHT-40).createFromHTML(chatButtonHTML).setOrigin(0)
+        chatButton.addListener('click')
+        chatButton.on('click', (event) => {
+            // need to get value inside chatInput
+            var inputText = this.scene.getChildByName('textInput'); // <--------------- broken
+            console.log('Need to gun: '+inputText.value);
+        })
+
         //var textInput = this.add.dom(8, GAME_HEIGHT-25).createFromCache('textInput').setOrigin(0,0)
 
         chatLog.on((data) => {      
