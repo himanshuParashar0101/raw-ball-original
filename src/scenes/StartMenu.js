@@ -212,7 +212,7 @@ class StartMenu extends Phaser.Scene {
 
     web3Intialize() {
 
-        console.log("Contract Initializing");
+        //console.log("Contract Initializing");
         //Basic Actions Section
         //const onboardButton = document.getElementById('connectButton');
         //const getAccountsButton = document.getElementById('getAccounts');
@@ -352,6 +352,7 @@ class StartMenu extends Phaser.Scene {
         //firstMessage.sendMessage()
 
         var chatLog = gun.get('testChatApp5501').get('messageList');
+        //console.log("gunmessagelist = " + chatLog);
 
         /*
    Chat Functionality
@@ -364,31 +365,40 @@ class StartMenu extends Phaser.Scene {
 
         chatButton.addListener('click')
         chatButton.on('click', (event) => {
-            console.log(chatInput.getChildByID('chatInput').value);
+            //console.log(chatInput.getChildByID('chatInput').value);
             // need to get value inside chatInput
             var inputText = chatInput.getChildByID('chatInput').value;
             let easyName = localStorage.getItem("userName");
             let easyName1 = easyName.slice(2).substring(0, 4)
             let easyName2 = easyName.substring(easyName.length - 4);
             let walletName = easyName1 + '...' + easyName2;
-            console.log('Need to gun: ' + walletName + ': ' + inputText);
+            //console.log('Need to gun: ' + walletName + ': ' + inputText);
             let message = walletName + ': ' + inputText;
             gun.get('testChatApp5501').get('messageList').put(message)
 
-            gunSend
+            //gunSend
         })
 
         //var textInput = this.add.dom(8, GAME_HEIGHT-25).createFromCache('textInput').setOrigin(0,0)
+        let counter = 0;
+        let chatLogDisplay = this.add.text(8, GAME_HEIGHT - (80+counter), chatTextArray);
 
         chatLog.on((data) => {
+            if (chatLogDisplay) {
+                chatLogDisplay.destroy(true)
+            }
             let thisMessage = data;
             thisMessage = thisMessage.trim();
             thisMessage = thisMessage.replace(/\n|\r/g, "");
-            console.log("received", thisMessage);
+            //console.log("received", thisMessage);
             chatTextArray.push(thisMessage)
-            this.add.text(8, GAME_HEIGHT - 80, thisMessage);
-            let newMessage = new ChatText(localStorage.userName, thisMessage);
-            newMessage.sendMessage()
+
+            chatLogDisplay = this.add.text(8, GAME_HEIGHT - (80+counter), chatTextArray, {backgroundColor: "black"});
+            counter += 15;
+            //chatTextArray.push(newMessage)
+
+            //let newMessage = new ChatText(localStorage.userName, thisMessage);
+            //newMessage.sendMessage()
         });
 
     }
