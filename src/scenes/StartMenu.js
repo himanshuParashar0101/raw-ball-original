@@ -393,8 +393,12 @@ class StartMenu extends Phaser.Scene {
             //console.log("received", thisMessage);
             chatTextArray.push(thisMessage)
 
-            chatLogDisplay = this.add.text(8, GAME_HEIGHT - (80+counter), chatTextArray, {backgroundColor: "black"});
-            counter += 15;
+            chatLogDisplay = this.add.text(8, GAME_HEIGHT - (80+counter), chatTextArray, {
+                //backgroundColor: "rgb(72, 77, 110)",
+                strokeThickness: 2,
+			    shadow: { blur: 2, stroke: true, color: '#000000', fill: true }
+            });
+            counter += 16;
             //chatTextArray.push(newMessage)
 
             //let newMessage = new ChatText(localStorage.userName, thisMessage);
