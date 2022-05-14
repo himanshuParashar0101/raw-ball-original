@@ -32,7 +32,9 @@ var courtBg,
     startButton,
     connectButton,
     connectedButton,
-    getMetaMaskButton;
+    getMetaMaskButton,
+    chatInput,
+    chatInputHTML;
 
 // tween the images to snap into position quickly
 
@@ -53,14 +55,7 @@ var courtBg,
 
 
 //basic match making for participants to be able to play
-/*
-get chat data from gun, push to chatTextArray
-userName from browser inputs message somewhere
-message sent via gun
-on new data display chat
-push new data to chatTextArray
 
-*/
 
 class StartMenu extends Phaser.Scene {
 
@@ -331,58 +326,24 @@ class StartMenu extends Phaser.Scene {
         }
     }
     showChat() {
-
-
-
+        
         let chatTextArray = [];
-        class ChatText {
-            constructor(message) {
-                /* ... */
-                //this.userName = userName;
-                this.message = message;
-            }
-            /*
-            sendMessage() {
-                console.log(`${this.userName}: ` + this.message);
-                chatTextArray.push({ userName: this.userName, message: this.message });
-            }
-            */
-        }
-        //const firstMessage = new ChatText("T", "Hello World")
-        //firstMessage.sendMessage()
+        var enterKey = this.input.keyboard.addKey('ENTER');
 
         var chatLog = gun.get('testChatApp5501').get('messageList');
-        //console.log("gunmessagelist = " + chatLog);
-
-        /*
-   Chat Functionality
-*/
-        //this.text = this.add.text(8, GAME_HEIGHT-30, 'Type Message...', { color: 'white', fontSize: '14px '}); 
-        let chatInputHTML = '<input type="text" id="chatInput" name="textInput" placeholder="Type to Chat" style="font-size: 26px; width: 500px">'
+        
+        chatInputHTML = '<input type="text" id="chatInput" name="textInput" placeholder="Type to Chat" style="font-size: 26px; width: 500px">'
         let chatButtonHTML = '<input type="button" name="sendButton" value="Chat" style="font-size: 26px">'
-        let chatInput = this.add.dom(8, GAME_HEIGHT - 40).createFromHTML(chatInputHTML).setOrigin(0)
+        chatInput = this.add.dom(8, GAME_HEIGHT - 40).createFromHTML(chatInputHTML).setOrigin(0)
         let chatButton = this.add.dom(508, GAME_HEIGHT - 40).createFromHTML(chatButtonHTML).setOrigin(0)
-
         chatButton.addListener('click')
         chatButton.on('click', (event) => {
-            //console.log(chatInput.getChildByID('chatInput').value);
-            // need to get value inside chatInput
-            var inputText = chatInput.getChildByID('chatInput').value;
-            let easyName = localStorage.getItem("userName");
-            let easyName1 = easyName.slice(2).substring(0, 4)
-            let easyName2 = easyName.substring(easyName.length - 4);
-            let walletName = easyName1 + '...' + easyName2;
-            //console.log('Need to gun: ' + walletName + ': ' + inputText);
-            let message = walletName + ': ' + inputText;
-            gun.get('testChatApp5501').get('messageList').put(message)
-
-            //gunSend
+            this.sendChatMessage()
         })
-
-        //var textInput = this.add.dom(8, GAME_HEIGHT-25).createFromCache('textInput').setOrigin(0,0)
-        let counter = 0;
-        let chatLogDisplay = this.add.text(8, GAME_HEIGHT - (80+counter), chatTextArray);
-
+        let pressingEnterKey = enterKey.on('down', (event)=>{
+            this.sendChatMessage()
+        })
+        let chatLogDisplay = this.add.text(8, GAME_HEIGHT - 48, chatTextArray);
         chatLog.on((data) => {
             if (chatLogDisplay) {
                 chatLogDisplay.destroy(true)
@@ -393,21 +354,35 @@ class StartMenu extends Phaser.Scene {
             //console.log("received", thisMessage);
             chatTextArray.push(thisMessage)
 
-            chatLogDisplay = this.add.text(8, GAME_HEIGHT - (80+counter), chatTextArray, {
+            chatLogDisplay = this.add.text(8, GAME_HEIGHT - 48, chatTextArray, {
                 //backgroundColor: "rgb(72, 77, 110)",
                 strokeThickness: 2,
 			    shadow: { blur: 2, stroke: true, color: '#000000', fill: true }
-            });
-            counter += 16;
-            //chatTextArray.push(newMessage)
-
-            //let newMessage = new ChatText(localStorage.userName, thisMessage);
-            //newMessage.sendMessage()
+            }).setOrigin(0,1);
         });
+    }
+    
+    sendChatMessage() {
+            //console.log(chatInput.getChildByID('chatInput').value);
+            // need to get value inside chatInput
+            var inputText = chatInput.getChildByID('chatInput').value;
 
+            if (inputText != '') {
+                let easyName = localStorage.getItem("userName");
+                let easyName1 = easyName.slice(2).substring(0, 4)
+                let easyName2 = easyName.substring(easyName.length - 4);
+                let walletName = easyName1 + '...' + easyName2;
+                //console.log('Need to gun: ' + walletName + ': ' + inputText);
+                let message = walletName + ': ' + inputText;
+                gun.get('testChatApp5501').get('messageList').put(message)
+                
+                //reset input to blank
+                //chatInput.getChildByID('chatInput').setAttribute('value', '')
+                chatInput.destroy()
+                chatInput = this.add.dom(8, GAME_HEIGHT - 40).createFromHTML(chatInputHTML).setOrigin(0)
+            }
     }
 
-    
     update() {
 
     }
