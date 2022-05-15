@@ -63,7 +63,6 @@ class StartMenu extends Phaser.Scene {
         super('StartMenu');
     }
 
-
     preload() {
 
         this.load.image('connectButton', ConnectButton)
@@ -289,6 +288,7 @@ class StartMenu extends Phaser.Scene {
         //On this object we have startOnboarding which will start the onboarding process for our end user
         Onboarding.startOnboarding();
     }
+
     async metaMaskConnect() {
         try {
             // Will open the MetaMask UI
@@ -325,6 +325,7 @@ class StartMenu extends Phaser.Scene {
             console.error(error);
         }
     }
+
     showChat() {
         
         let chatTextArray = [];
@@ -361,7 +362,7 @@ class StartMenu extends Phaser.Scene {
             }).setOrigin(0,1);
         });
     }
-    
+
     sendChatMessage() {
             //console.log(chatInput.getChildByID('chatInput').value);
             // need to get value inside chatInput
@@ -383,12 +384,28 @@ class StartMenu extends Phaser.Scene {
             }
     }
 
+    playerLobby = [];
+    addPlayerToLobby() {
+        // push connected username to lobby
+    }
+    
+    matchMaker() {
+        // after connecting & chat enabled - submit player into player pool
+        
+        // eventually get pings for players and match accordingly
+
+        // if userName matches a pair of usernames change scene to game
+
+        // to start just match up random players who press the find match button
+        
+        // display players in lobby
+
+        // remove players when its detected they have left or disconnected?
+    }
+
     update() {
 
     }
-
-
-
 
 }
 
