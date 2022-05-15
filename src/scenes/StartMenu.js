@@ -1,8 +1,6 @@
 import Phaser, { Scene } from 'phaser';
 import Onboarding from '@metamask/onboarding';
 import GUN from 'gun';
-const gun = GUN(['https://gun-manhattan.herokuapp.com/gun']);
-
 import ConnectButton from '../assets/pong/png/ConnectButton.png'
 import ConnectedButton from '../assets/pong/png/ConnectedButton.png'
 import GetMetaMaskButton from '../assets/pong/png/GetMetaMaskButton.png'
@@ -21,6 +19,7 @@ import StartButton from '../assets/pong/png/startButton.png'
 import BallKickSound1 from '../assets/pong/sfx/ballKickSound.mp3';
 import MediumCheer6 from '../assets/pong/sfx/medcheer6.mp3';
 
+const gun = GUN(['https://gun-manhattan.herokuapp.com/gun']);
 const GAME_HEIGHT = 860;
 const GAME_WIDTH = 1280;
 
@@ -321,6 +320,7 @@ class StartMenu extends Phaser.Scene {
                 delay: 3000
             })
             this.showChat()
+            this.addPlayerToLobby()
         } catch (error) {
             console.error(error);
         }
@@ -386,7 +386,11 @@ class StartMenu extends Phaser.Scene {
 
     playerLobby = [];
     addPlayerToLobby() {
+        let thisUser = localStorage.getItem('userName')
+        console.log("Adding player: "+thisUser+" to playerLobby.");
         // push connected username to lobby
+        this.playerLobby.push(thisUser)
+        console.log("Total users in lobby = "+this.playerLobby.length);
     }
     
     matchMaker() {
