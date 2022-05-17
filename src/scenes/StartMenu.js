@@ -419,12 +419,12 @@ class StartMenu extends Phaser.Scene {
         //let localUserNameObject = {userName: localUserName}
         //console.log(localUserNameObject);
 
-        //gun.get('testChatApp5501').get('playerLobby').put({userName: localUserName})
+        gun.get('testChatApp5501').get('playerLobby').put({userName: "Player3"})
 
         //console.log("Lobby After = " + gun.get('testChatApp5501').get('playerLobby'));
         //console.log(gun.get('Uncharted').val());
 
-        var playerLobby = gun.get("testChatApp5501/playerLobby")
+        var playerLobby = gun.get("testChatApp5501").get("playerLobby")
         playerLobby.map().on(function(item, id){
             console.log("I see: "+id+": "+ item);
         })
