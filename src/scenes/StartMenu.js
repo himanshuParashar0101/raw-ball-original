@@ -1,8 +1,6 @@
 import Phaser, { Scene } from 'phaser';
 import Onboarding from '@metamask/onboarding';
 import GUN from 'gun';
-const gun = GUN(['https://gun-manhattan.herokuapp.com/gun']);
-
 import ConnectButton from '../assets/pong/png/ConnectButton.png'
 import ConnectedButton from '../assets/pong/png/ConnectedButton.png'
 import GetMetaMaskButton from '../assets/pong/png/GetMetaMaskButton.png'
@@ -21,6 +19,7 @@ import StartButton from '../assets/pong/png/startButton.png'
 import BallKickSound1 from '../assets/pong/sfx/ballKickSound.mp3';
 import MediumCheer6 from '../assets/pong/sfx/medcheer6.mp3';
 
+const gun = GUN(['https://gun-manhattan.herokuapp.com/gun']);
 const GAME_HEIGHT = 860;
 const GAME_WIDTH = 1280;
 
@@ -319,6 +318,7 @@ class StartMenu extends Phaser.Scene {
 
             this.addPlayerToLobby()
             this.showChat()
+            this.addPlayerToLobby()
         } catch (error) {
             console.error(error);
         }
@@ -407,6 +407,29 @@ class StartMenu extends Phaser.Scene {
             }
     }
 
+    addPlayerToLobby() {
+
+        // figure out how to use .set and how .get chains actually work
+        //console.log("Lobby Before = " + JSON.stringify(gun.get('testChatApp5501').get('playerLobby')));
+        //let playerLobby = gun.get('testChatApp5501').get('playerLobby');
+       
+        // push connected username to lobby
+        // set() to store values in a list (set, array)
+        //let localUserName = localStorage.getItem('userName')
+        //let localUserNameObject = {userName: localUserName}
+        //console.log(localUserNameObject);
+
+        //gun.get('testChatApp5501').get('playerLobby').put({userName: localUserName})
+
+        //console.log("Lobby After = " + gun.get('testChatApp5501').get('playerLobby'));
+        //console.log(gun.get('Uncharted').val());
+
+        var playerLobby = gun.get("testChatApp5501/playerLobby")
+        playerLobby.map().on(function(item, id){
+            console.log("I see: "+id+": "+ item);
+        })
+
+    }
     matchMaker() {
         // after connecting & chat enabled - submit player into player pool
         
@@ -424,6 +447,8 @@ class StartMenu extends Phaser.Scene {
     update() {
 
     }
+
+
 
 }
 
