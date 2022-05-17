@@ -45,17 +45,13 @@ var courtBg,
 // import character 3
 // import about
 
-
 // import sound2
 // import sound3
-
 
 //RAWBall - Remote Access Workforce Ball
 // to do:
 
-
 //basic match making for participants to be able to play
-
 
 class StartMenu extends Phaser.Scene {
 
@@ -112,7 +108,7 @@ class StartMenu extends Phaser.Scene {
         let startScreenMusic;
 
         //startScreenMusic = this.sound.play('startMusic', {volume: 0.05});
-        videoIntro.play(false)
+        //videoIntro.play(false)
         this.tweenImages()
 
 
@@ -157,7 +153,7 @@ class StartMenu extends Phaser.Scene {
             duration: 1200,
             ease: 'Bounce',
             yoyo: false,
-            delay: 7000
+            delay: 0//7000
         });
         this.tweens.add({
             targets: leftGoalPost,
@@ -165,7 +161,7 @@ class StartMenu extends Phaser.Scene {
             duration: 2000,
             ease: 'Bounce',
             yoyo: false,
-            delay: 7100
+            delay: 0//7100
         });
         this.tweens.add({
             targets: rightGoalPost,
@@ -173,7 +169,7 @@ class StartMenu extends Phaser.Scene {
             duration: 2000,
             ease: 'Bounce',
             yoyo: false,
-            delay: 7200
+            delay: 0//7200
         });
         this.tweens.add({
             targets: roof,
@@ -181,7 +177,7 @@ class StartMenu extends Phaser.Scene {
             duration: 800,
             ease: 'Linear',
             yoyo: false,
-            delay: 7300
+            delay: 0//7300
         });
         this.tweens.add({
             targets: gameLogo,
@@ -189,7 +185,7 @@ class StartMenu extends Phaser.Scene {
             duration: 1000,
             ease: 'Linear',
             yoyo: false,
-            delay: 7300
+            delay: 0//7300
         });
         // start button
         /*
@@ -255,7 +251,7 @@ class StartMenu extends Phaser.Scene {
                     duration: 800,
                     ease: 'Linear',
                     yoyo: false,
-                    delay: 7300
+                    delay: 0//7300
                 });
 
 
@@ -274,7 +270,7 @@ class StartMenu extends Phaser.Scene {
                     duration: 800,
                     ease: 'Linear',
                     yoyo: false,
-                    delay: 7300
+                    delay: 0//7300
                 });
 
             }
@@ -320,11 +316,38 @@ class StartMenu extends Phaser.Scene {
                 yoyo: false,
                 delay: 3000
             })
+
+            this.addPlayerToLobby()
             this.showChat()
         } catch (error) {
             console.error(error);
         }
     }
+
+    addPlayerToLobby() {        
+
+        // figure out how to use .set and how .get chains actually work
+        //console.log("Lobby Before = " + JSON.stringify(gun.get('testChatApp5501').get('playerLobby')));
+        //let playerLobby = gun.get('testChatApp5501').get('playerLobby');
+       
+        // push connected username to lobby
+        // set() to store values in a list (set, array)
+        //let localUserName = localStorage.getItem('userName')
+        //let localUserNameObject = {userName: localUserName}
+        //console.log(localUserNameObject);
+
+        //gun.get('testChatApp5501').get('playerLobby').put({userName: localUserName})
+
+        //console.log("Lobby After = " + gun.get('testChatApp5501').get('playerLobby'));
+        //console.log(gun.get('Uncharted').val());
+
+        var playerLobby = gun.get("testChatApp5501/playerLobby")
+        playerLobby.map().on(function(item, id){
+            console.log("I see: "+id+": "+ item);
+        })
+
+    }
+    
 
     showChat() {
         
@@ -384,11 +407,6 @@ class StartMenu extends Phaser.Scene {
             }
     }
 
-    playerLobby = [];
-    addPlayerToLobby() {
-        // push connected username to lobby
-    }
-    
     matchMaker() {
         // after connecting & chat enabled - submit player into player pool
         
